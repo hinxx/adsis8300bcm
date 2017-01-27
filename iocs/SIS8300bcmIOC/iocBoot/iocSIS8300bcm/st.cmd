@@ -39,7 +39,7 @@ epicsEnvSet("AICH9",      "AI9")
 # ADDR 10     is for BCM
 epicsEnvSet("NUM_CH",        "11")
 # Number of samples to acquire
-epicsEnvSet("NUM_SAMPLES",   "260000")
+epicsEnvSet("NUM_SAMPLES",   "300000")
 # The maximum number of time series points in the NDPluginTimeSeries plugin
 epicsEnvSet("TSPOINTS",      "600000")
 
