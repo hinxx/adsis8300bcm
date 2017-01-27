@@ -777,72 +777,6 @@ $(pv_value)</tooltip>
         <replace>0</replace>
         <description>Time series AI</description>
       </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDPluginTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>TS1:</R>
-          <R0>TS1:0:</R0>
-          <R1>TS1:1:</R1>
-          <R2>TS1:2:</R2>
-          <R3>TS1:3:</R3>
-          <R4>TS1:4:</R4>
-          <R5>TS1:5:</R5>
-          <R6>TS1:6:</R6>
-          <R7>TS1:7:</R7>
-          <R8>TS1:8:</R8>
-          <R9>TS1:9:</R9>
-          <R10>TS1:10:</R10>
-          <R11>TS1:11:</R11>
-          <T0>X pos</T0>
-          <T1>Y pos</T1>
-          <T2>Magnitude sum</T2>
-          <T3>Phase sum</T3>
-          <T4>A magnitude</T4>
-          <T5>B magnitude</T5>
-          <T6>C magnitude</T6>
-          <T7>D magnitude</T7>
-          <T8>A phase</T8>
-          <T9>B phase</T9>
-          <T10>C phase</T10>
-          <T11>D phase</T11>
-        </macros>
-        <replace>0</replace>
-        <description>Time series BCM1</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDPluginTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>TS2:</R>
-          <R0>TS2:0:</R0>
-          <R1>TS2:1:</R1>
-          <R2>TS2:2:</R2>
-          <R3>TS2:3:</R3>
-          <R4>TS2:4:</R4>
-          <R5>TS2:5:</R5>
-          <R6>TS2:6:</R6>
-          <R7>TS2:7:</R7>
-          <R8>TS2:8:</R8>
-          <R9>TS2:9:</R9>
-          <R10>TS2:10:</R10>
-          <R11>TS2:11:</R11>
-          <T0>X pos</T0>
-          <T1>Y pos</T1>
-          <T2>Magnitude sum</T2>
-          <T3>Phase sum</T3>
-          <T4>A magnitude</T4>
-          <T5>B magnitude</T5>
-          <T6>C magnitude</T6>
-          <T7>D magnitude</T7>
-          <T8>A phase</T8>
-          <T9>B phase</T9>
-          <T10>C phase</T10>
-          <T11>D phase</T11>
-        </macros>
-        <replace>0</replace>
-        <description>Time series BCM2</description>
-      </action>
     </actions>
     <font>
       <opifont.name fontName="Noto Sans" height="9" style="0">Default</opifont.name>
@@ -2332,244 +2266,6 @@ $(pv_value)</tooltip>
     <horizontal_alignment>0</horizontal_alignment>
     <rules />
     <enabled>true</enabled>
-    <wuid>-7740c9ed:1570e0d7a6f:-730e</wuid>
-    <transparent>false</transparent>
-    <pv_value />
-    <auto_size>false</auto_size>
-    <text>######</text>
-    <rotation_angle>0.0</rotation_angle>
-    <scripts />
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <show_units>true</show_units>
-    <height>18</height>
-    <border_width>1</border_width>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <visible>true</visible>
-    <pv_name>$(P)$(R)RTMTemp1_RBV</pv_name>
-    <vertical_alignment>1</vertical_alignment>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <precision_from_pv>true</precision_from_pv>
-    <widget_type>Text Update</widget_type>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <wrap_words>false</wrap_words>
-    <format_type>0</format_type>
-    <background_color>
-      <color red="187" green="187" blue="187" />
-    </background_color>
-    <width>47</width>
-    <x>177</x>
-    <name>Text Update_33</name>
-    <y>623</y>
-    <foreground_color>
-      <color red="10" green="0" blue="184" />
-    </foreground_color>
-    <actions hook="false" hook_all="false" />
-    <font>
-      <fontdata fontName="Noto Sans" height="11" style="0" />
-    </font>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
-    <border_style>0</border_style>
-    <tooltip></tooltip>
-    <horizontal_alignment>1</horizontal_alignment>
-    <rules />
-    <enabled>true</enabled>
-    <wuid>-7740c9ed:1570e0d7a6f:-730d</wuid>
-    <transparent>true</transparent>
-    <auto_size>false</auto_size>
-    <text>RTM temperature 1</text>
-    <scripts />
-    <height>20</height>
-    <border_width>1</border_width>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <widget_type>Label</widget_type>
-    <wrap_words>false</wrap_words>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <width>149</width>
-    <x>11</x>
-    <name>Label_53</name>
-    <y>622</y>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <actions hook="false" hook_all="false" />
-    <font>
-      <fontdata fontName="Noto Sans" height="11" style="0" />
-    </font>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <border_style>0</border_style>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <alarm_pulsing>false</alarm_pulsing>
-    <precision>0</precision>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <horizontal_alignment>0</horizontal_alignment>
-    <rules />
-    <enabled>true</enabled>
-    <wuid>-7740c9ed:1570e0d7a6f:-7302</wuid>
-    <transparent>false</transparent>
-    <pv_value />
-    <auto_size>false</auto_size>
-    <text>######</text>
-    <rotation_angle>0.0</rotation_angle>
-    <scripts />
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <show_units>true</show_units>
-    <height>18</height>
-    <border_width>1</border_width>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <visible>true</visible>
-    <pv_name>$(P)$(R)RTMTemp2_RBV</pv_name>
-    <vertical_alignment>1</vertical_alignment>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <precision_from_pv>true</precision_from_pv>
-    <widget_type>Text Update</widget_type>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <wrap_words>false</wrap_words>
-    <format_type>0</format_type>
-    <background_color>
-      <color red="187" green="187" blue="187" />
-    </background_color>
-    <width>48</width>
-    <x>177</x>
-    <name>Text Update_34</name>
-    <y>645</y>
-    <foreground_color>
-      <color red="10" green="0" blue="184" />
-    </foreground_color>
-    <actions hook="false" hook_all="false" />
-    <font>
-      <fontdata fontName="Noto Sans" height="11" style="0" />
-    </font>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
-    <border_style>0</border_style>
-    <tooltip></tooltip>
-    <horizontal_alignment>1</horizontal_alignment>
-    <rules />
-    <enabled>true</enabled>
-    <wuid>-7740c9ed:1570e0d7a6f:-7301</wuid>
-    <transparent>true</transparent>
-    <auto_size>false</auto_size>
-    <text>RTM temperature 2</text>
-    <scripts />
-    <height>20</height>
-    <border_width>1</border_width>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <widget_type>Label</widget_type>
-    <wrap_words>false</wrap_words>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <width>149</width>
-    <x>11</x>
-    <name>Label_54</name>
-    <y>644</y>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <actions hook="false" hook_all="false" />
-    <font>
-      <fontdata fontName="Noto Sans" height="11" style="0" />
-    </font>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <toggle_button>false</toggle_button>
-    <border_style>0</border_style>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <alarm_pulsing>false</alarm_pulsing>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <push_action_index>0</push_action_index>
-    <rules />
-    <enabled>true</enabled>
-    <wuid>-7740c9ed:1570e0d7a6f:-72f0</wuid>
-    <pv_value />
-    <text>Temperature refresh</text>
-    <scripts />
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <height>20</height>
-    <border_width>1</border_width>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <image></image>
-    <visible>true</visible>
-    <pv_name>$(P)$(R)RTMTempGet</pv_name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <widget_type>Action Button</widget_type>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="115" green="223" blue="255" />
-    </background_color>
-    <width>170</width>
-    <x>44</x>
-    <name>Action Button_2</name>
-    <y>668</y>
-    <style>0</style>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <actions hook="false" hook_all="false">
-      <action type="WRITE_PV">
-        <pv_name>$(P)$(R)RTMTempGet</pv_name>
-        <value>1</value>
-        <timeout>10</timeout>
-        <confirm_message></confirm_message>
-        <description></description>
-      </action>
-    </actions>
-    <font>
-      <opifont.name fontName="Noto Sans" height="9" style="0">Default</opifont.name>
-    </font>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <border_style>0</border_style>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <alarm_pulsing>false</alarm_pulsing>
-    <precision>0</precision>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <horizontal_alignment>0</horizontal_alignment>
-    <rules />
-    <enabled>true</enabled>
     <wuid>6efdd1f6:1578a1e3409:-734e</wuid>
     <transparent>false</transparent>
     <pv_value />
@@ -3311,7 +3007,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <show_units>false</show_units>
-    <height>18</height>
+    <height>82</height>
     <border_width>1</border_width>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -3335,13 +3031,13 @@ $(pv_value)</tooltip>
     <width>339</width>
     <x>351</x>
     <name>Text Update_15</name>
-    <y>676</y>
+    <y>640</y>
     <foreground_color>
       <color red="10" green="0" blue="184" />
     </foreground_color>
     <actions hook="false" hook_all="false" />
     <font>
-      <fontdata fontName="Noto Sans" height="11" style="0" />
+      <fontdata fontName="Noto Sans" height="9" style="0" />
     </font>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
