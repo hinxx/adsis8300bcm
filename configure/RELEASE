@@ -8,4 +8,6 @@
 -include $(TOP)/RELEASE.local
 -include $(TOP)/configure/RELEASE.local
 
+BCM = $(TOP)
+
 BUILD_IOCS = YES
