@@ -38,11 +38,12 @@
 #include <bcm.h>
 
 
-static const char *driverName = "bcm";
+static const char *driverName = "Bcm";
 
 /* asyn addresses:
  * 0 .. 9    AI channels
- * 10        BCM channels
+ * 10 .. 19  BCM channels
+ * 20 .. 23  Probe channels
  */
 #define BCM_ADDR		10
 
@@ -78,7 +79,62 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 {
     D(printf("%d addresses, %d parameters\n", maxAddr, NUM_BCM_PARAMS));
 
-    this->mRegisterIndex = 0;
+//    this->mRegisterIndex = 0;
+
+    createParam(BcmAllAlarmsString,		asynParamInt32,	&mBcmAllAlarms);
+    createParam(BcmAuxClkAlarmString,		asynParamInt32,	&mBcmAuxClkAlarm);
+    createParam(BcmCalPulseString,		asynParamInt32,	&mBcmCalPulse);
+    createParam(BcmClkFreqString,		asynParamInt32,	&mBcmClkFreq);
+    createParam(BcmClkTrigAlarmsFirstString,		asynParamInt32,	&mBcmClkTrigAlarmsFirst);
+    createParam(BcmClkTrigAlarmsLatchedString,		asynParamInt32,	&mBcmClkTrigAlarmsLatched);
+    createParam(BcmDiffWarnResetString,		asynParamInt32,	&mBcmDiffWarnReset);
+    createParam(BcmFlatTopTimeString,		asynParamInt32,	&mBcmFlatTopTime);
+    createParam(BcmFwVersionString,		asynParamInt32,	&mBcmFwVersion);
+    createParam(BcmMainClkAlarmString,		asynParamInt32,	&mBcmMainClkAlarm);
+    createParam(BcmMaxPulseWidthString,		asynParamInt32,	&mBcmMaxPulseWidth);
+    createParam(BcmMinTrigPeriodString,		asynParamInt32,	&mBcmMinTrigPeriod);
+    createParam(BcmResetAlarmsString,		asynParamInt32,	&mBcmResetAlarms);
+    createParam(BcmRfqTransparencyString,		asynParamInt32,	&mBcmRfqTransparency);
+    createParam(BcmStatusString,		asynParamInt32,	&mBcmStatus);
+    createParam(BcmSwVersionString,		asynParamInt32,	&mBcmSwVersion);
+    createParam(BcmTrigPeriodString,		asynParamInt32,	&mBcmTrigPeriod);
+    createParam(BcmTrigPeriodSrcSelString,		asynParamInt32,	&mBcmTrigPeriodSrcSel);
+    createParam(BcmTrigTooFastAlarmString,		asynParamInt32,	&mBcmTrigTooFastAlarm);
+    createParam(BcmTrigTooLongAlarmString,		asynParamInt32,	&mBcmTrigTooLongAlarm);
+    createParam(BcmTrigTooShortAlarmString,		asynParamInt32,	&mBcmTrigTooShortAlarm);
+    createParam(BcmTrigWidthString,		asynParamInt32,	&mBcmTrigWidth);
+
+    createParam(BcmAdcAlarmsFirstString,		asynParamInt32,	&mBcmAdcAlarmsFirst);
+    createParam(BcmAdcAlarmsLatchedString,		asynParamInt32,	&mBcmAdcAlarmsLatched);
+    createParam(BcmAdcOffsetString,		asynParamInt32,	&mBcmAdcOffset);
+    createParam(BcmAdcOffsErrorAvgString,		asynParamInt32,	&mBcmAdcOffsErrorAvg);
+    createParam(BcmAdcOffsErrorIntegString,		asynParamInt32,	&mBcmAdcOffsErrorInteg);
+    createParam(BcmAdcScaleString,		asynParamInt32,	&mBcmAdcScale);
+    createParam(BcmCalPulseAmplEarlyString,		asynParamInt32,	&mBcmCalPulseAmplEarly);
+    createParam(BcmCalPulseAmplLateString,		asynParamInt32,	&mBcmCalPulseAmplLate);
+    createParam(BcmDrooprateString,		asynParamInt32,	&mBcmDrooprate);
+    createParam(BcmDroopBaselineString,		asynParamInt32,	&mBcmDroopBaseline);
+    createParam(BcmDroopErrorString,		asynParamInt32,	&mBcmDroopError);
+    createParam(BcmErrantThresholdString,		asynParamInt32,	&mBcmErrantThreshold);
+    createParam(BcmErrantThresholdAlarmString,		asynParamInt32,	&mBcmErrantThresholdAlarm);
+    createParam(BcmFlatTopChargeString,		asynParamInt32,	&mBcmFlatTopCharge);
+    createParam(BcmLocationMebtString,		asynParamInt32,	&mBcmLocationMebt);
+    createParam(BcmLocationRfqString,		asynParamInt32,	&mBcmLocationRfq);
+    createParam(BcmLowerThresholdString,		asynParamInt32,	&mBcmLowerThreshold);
+    createParam(BcmLowerThresholdAlarmString,		asynParamInt32,	&mBcmLowerThresholdAlarm);
+    createParam(BcmNoiseFilterString,		asynParamInt32,	&mBcmNoiseFilter);
+    createParam(BcmOverflowAlarmString,		asynParamInt32,	&mBcmOverflowAlarm);
+    createParam(BcmPulseChargeString,		asynParamInt32,	&mBcmPulseCharge);
+    createParam(BcmPulsePastLimitAlarmString,		asynParamInt32,	&mBcmPulsePastLimitAlarm);
+    createParam(BcmPulsePastTriggerAlarmString,		asynParamInt32,	&mBcmPulsePastTriggerAlarm);
+    createParam(BcmPulseWidthString,		asynParamInt32,	&mBcmPulseWidth);
+    createParam(BcmStuckAlarmString,		asynParamInt32,	&mBcmStuckAlarm);
+    createParam(BcmTrigFineDelayString,		asynParamInt32,	&mBcmTrigFineDelay);
+    createParam(BcmTrigToPulseString,		asynParamInt32,	&mBcmTrigToPulse);
+    createParam(BcmUpperThresholdString,		asynParamInt32,	&mBcmUpperThreshold);
+    createParam(BcmUpperThresholdAlarmString,		asynParamInt32,	&mBcmUpperThresholdAlarm);
+
+    createParam(BcmProbeSourceSelectString,		asynParamInt32,	&mBcmProbeSourceSelect);
 
     this->lock();
     initDevice();
@@ -98,44 +154,6 @@ Bcm::~Bcm() {
 	I(printf("Shutdown complete!\n"));
 }
 
-asynStatus Bcm::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
-                                     const char **pptypeName, size_t *psize) {
-
-	asynStatus status;
-	int index;
-	epicsInt32 val;
-
-	D(printf("Enter for '%s'\n", drvInfo));
-
-	status = findParam(drvInfo, &index);
-	if (status && strlen(drvInfo)) {
-        /* Check we have allocated enough space */
-        if (mRegisterIndex > BCM_NREGISTERS) {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                        "%s:%s: Not enough space allocated to store all features, increase NFEATURES\n",
-                        driverName, __func__);
-            return asynError;
-        }
-		status = createParam(drvInfo, asynParamInt32, &(mRegisters[mRegisterIndex]));
-		if (status) {
-			return status;
-		}
-		status = ADSIS8300::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-		if (status) {
-			return status;
-		}
-		status = readInt32(pasynUser, &val);
-		if (status) {
-			return status;
-		}
-		mRegisterIndex++;
-
-		return asynSuccess;
-	}
-
-	// Just return baseclass result
-    return ADSIS8300::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-}
 
 /** Called when asyn clients call pasynInt32->write().
   * This function performs actions for some parameters.
@@ -158,6 +176,7 @@ asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
      * status at the end, but that's OK */
     status = setIntegerParam(addr, function, value);
 
+#if 0
     if (function >= mRegisters[0]) {
 		ret = sscanf(name, "%*s %X", &reg);
 		if (ret == 1) {
@@ -173,6 +192,7 @@ asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
         	status = ADSIS8300::writeInt32(pasynUser, value);
         }
     }
+#endif
 
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks(addr);
@@ -202,6 +222,7 @@ asynStatus Bcm::readInt32(asynUser *pasynUser, epicsInt32 *value)
     getAddress(pasynUser, &addr);
     getParamName(function, &name);
 
+#if 0
     if (function >= mRegisters[0]) {
 		D(printf("Enter '%s' %d (%d)\n", name, function, addr));
 
@@ -217,6 +238,7 @@ asynStatus Bcm::readInt32(asynUser *pasynUser, epicsInt32 *value)
 			}
 		}
     }
+#endif
 
     if (status) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR,
