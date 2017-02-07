@@ -1,0 +1,20 @@
+#=================================================================#
+# Template file: bcmProbe.template
+# Database for the records specific to the BCM driver
+# Hinko Kocevar
+# January 22, 2017
+
+## Register '0xn50' is RW (BCM_PROBE_SOURCE_SELECT)
+record(longout, "$(P)$(R)ProbeSrcSel")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PROBE_SOURCE_SELECT")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)ProbeSrcSel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PROBE_SOURCE_SELECT")
+    field(SCAN, "I/O Intr")
+}

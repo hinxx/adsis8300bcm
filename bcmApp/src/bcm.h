@@ -1,6 +1,6 @@
-/* ADSIS8300bcm.h
+/* bcm.h
  *
- * This is a driver for a Struck SIS8300 BCM digitizer.
+ * This is a driver for a BCM based on Struck SIS8300 digitizer.
  *
  * Author: Hinko Kocevar
  *         ESS ERIC, Lund, Sweden
@@ -16,21 +16,19 @@
 
 #include <sis8300drv.h>
 
-#define ADSIS8300BCM_NUM_CHANNELS      1
+#define BCM_NUM_CHANNELS      1
 
-#define ADSIS8300BCM_IRQ_WAIT_TIME     0
+#define BCM_IRQ_WAIT_TIME     0
 
 /* maximum number of BCM registers that we support */
-#define ADSIS8300BCM_NREGISTERS        1000
+#define BCM_NREGISTERS        1000
 
-/** Struck SIS8300 BCM driver; does 1-D waveforms on 1 channel.
-  * Inherits from ADSIS8300 */
-class epicsShareClass ADSIS8300bcm : public ADSIS8300 {
+class epicsShareClass Bcm : public ADSIS8300 {
 public:
-	ADSIS8300bcm(const char *portName, const char *devicePath,
+	Bcm(const char *portName, const char *devicePath,
 			int maxAddr, int numTimePoints, NDDataType_t dataType,
 			int maxBuffers, size_t maxMemory, int priority, int stackSize);
-	~ADSIS8300bcm();
+	~Bcm();
 
     /* These are the methods that we override from asynNDArrayDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -41,11 +39,11 @@ public:
 
 protected:
     /* System wide parameters */
-    int mRegisters[ADSIS8300BCM_NREGISTERS];
+    int mRegisters[BCM_NREGISTERS];
 
 private:
     /* Our data */
     unsigned int mRegisterIndex;
 };
 
-#define NUM_SIS8300BCM_PARAMS ((int)(ADSIS8300BCM_NREGISTERS))
+#define NUM_BCM_PARAMS ((int)(BCM_NREGISTERS))

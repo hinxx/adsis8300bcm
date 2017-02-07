@@ -1,7 +1,7 @@
-ADSIS8300bcm
-============
+Bcm
+===
 
-The home of the Struck SIS8300 BPM digitizer support for areaDetector software.
+The home of the BCM based on Struck SIS8300 BPM digitizer and areaDetector.
 
 [EPICS](http://www.aps.anl.gov/epics/) 
 

@@ -1,11 +1,11 @@
-/* ADSIS8300bcm.cpp
+/* bcm.cpp
  *
- * This is a driver for a Struck SIS8300 BCM digitizer.
+ * This is a driver for a BCM based on Struck SIS8300 digitizer.
  *
  * Author: Hinko Kocevar
  *         ESS ERIC, Lund, Sweden
  *
- * Created:  September 22, 2016
+ * Created:  January 22, 2017
  *
  */
 
@@ -35,18 +35,18 @@
 #include <epicsExport.h>
 
 #include <ADSIS8300.h>
-#include <ADSIS8300bcm.h>
+#include <bcm.h>
 
 
-static const char *driverName = "ADSIS8300bcm";
+static const char *driverName = "bcm";
 
 /* asyn addresses:
  * 0 .. 9    AI channels
  * 10        BCM channels
  */
-#define SIS8300BCM_BCM_ADDR		10
+#define BCM_ADDR		10
 
-/** Constructor for SIS8300bcm; most parameters are simply passed to ADSIS8300::ADSIS8300.
+/** Constructor for Bcm; most parameters are simply passed to ADSIS8300::ADSIS8300.
   * After calling the base class constructor this method creates a thread to compute the simulated detector data,
   * and sets reasonable default values for parameters defined in this class and ADSIS8300.
   * \param[in] portName The name of the asyn port driver to be created.
@@ -62,13 +62,13 @@ static const char *driverName = "ADSIS8300bcm";
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
-ADSIS8300bcm::ADSIS8300bcm(const char *portName, const char *devicePath,
+Bcm::Bcm(const char *portName, const char *devicePath,
 		int maxAddr, int numSamples, NDDataType_t dataType,
 		int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
     : ADSIS8300(portName, devicePath,
     		maxAddr,
-    		NUM_SIS8300BCM_PARAMS,
+    		NUM_BCM_PARAMS,
 			numSamples,
 			dataType,
 			maxBuffers, maxMemory,
@@ -76,7 +76,7 @@ ADSIS8300bcm::ADSIS8300bcm(const char *portName, const char *devicePath,
 			stackSize)
 
 {
-    D(printf("%d addresses, %d parameters\n", maxAddr, NUM_SIS8300BCM_PARAMS));
+    D(printf("%d addresses, %d parameters\n", maxAddr, NUM_BCM_PARAMS));
 
     this->mRegisterIndex = 0;
 
@@ -87,7 +87,7 @@ ADSIS8300bcm::ADSIS8300bcm(const char *portName, const char *devicePath,
 	I(printf("Init done...\n"));
 }
 
-ADSIS8300bcm::~ADSIS8300bcm() {
+Bcm::~Bcm() {
 	D(printf("Shutdown and freeing up memory...\n"));
 
 	this->lock();
@@ -98,7 +98,7 @@ ADSIS8300bcm::~ADSIS8300bcm() {
 	I(printf("Shutdown complete!\n"));
 }
 
-asynStatus ADSIS8300bcm::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
+asynStatus Bcm::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
                                      const char **pptypeName, size_t *psize) {
 
 	asynStatus status;
@@ -110,7 +110,7 @@ asynStatus ADSIS8300bcm::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
 	status = findParam(drvInfo, &index);
 	if (status && strlen(drvInfo)) {
         /* Check we have allocated enough space */
-        if (mRegisterIndex > ADSIS8300BCM_NREGISTERS) {
+        if (mRegisterIndex > BCM_NREGISTERS) {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s:%s: Not enough space allocated to store all features, increase NFEATURES\n",
                         driverName, __func__);
@@ -142,7 +142,7 @@ asynStatus ADSIS8300bcm::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write. */
-asynStatus ADSIS8300bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
+asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int addr;
     const char *name;
@@ -190,7 +190,7 @@ asynStatus ADSIS8300bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
-asynStatus ADSIS8300bcm::readInt32(asynUser *pasynUser, epicsInt32 *value)
+asynStatus Bcm::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
     int addr;
     const char *name;
@@ -240,9 +240,9 @@ asynStatus ADSIS8300bcm::readInt32(asynUser *pasynUser, epicsInt32 *value)
   * \param[in] fp File pointed passed by caller where the output is written to.
   * \param[in] details If >0 then driver details are printed.
   */
-void ADSIS8300bcm::report(FILE *fp, int details)
+void Bcm::report(FILE *fp, int details)
 {
-    fprintf(fp, "Struck SIS8300 based BCM\n");
+    fprintf(fp, "BCM\n");
     if (details > 0) {
     }
 
@@ -251,11 +251,11 @@ void ADSIS8300bcm::report(FILE *fp, int details)
 }
 
 /** Configuration command, called directly or from iocsh */
-extern "C" int SIS8300BcmConfig(const char *portName, const char *devicePath,
+extern "C" int BcmConfig(const char *portName, const char *devicePath,
 		int maxAddr, int numSamples, int dataType, int maxBuffers, int maxMemory,
 		int priority, int stackSize)
 {
-    new ADSIS8300bcm(portName, devicePath,
+    new Bcm(portName, devicePath,
     		maxAddr,
     		numSamples,
 			(NDDataType_t)dataType,
@@ -266,37 +266,37 @@ extern "C" int SIS8300BcmConfig(const char *portName, const char *devicePath,
 }
 
 /** Code for iocsh registration */
-static const iocshArg SIS8300BcmConfigArg0 = {"Port name",     iocshArgString};
-static const iocshArg SIS8300BcmConfigArg1 = {"Device path",   iocshArgString};
-static const iocshArg SIS8300BcmConfigArg2 = {"# channels",    iocshArgInt};
-static const iocshArg SIS8300BcmConfigArg3 = {"# samples",     iocshArgInt};
-static const iocshArg SIS8300BcmConfigArg4 = {"Data type",     iocshArgInt};
-static const iocshArg SIS8300BcmConfigArg5 = {"maxBuffers",    iocshArgInt};
-static const iocshArg SIS8300BcmConfigArg6 = {"maxMemory",     iocshArgInt};
-static const iocshArg SIS8300BcmConfigArg7 = {"priority",      iocshArgInt};
-static const iocshArg SIS8300BcmConfigArg8 = {"stackSize",     iocshArgInt};
-static const iocshArg * const SIS8300BcmConfigArgs[] = {&SIS8300BcmConfigArg0,
-                                                     &SIS8300BcmConfigArg1,
-													 &SIS8300BcmConfigArg2,
-													 &SIS8300BcmConfigArg3,
-													 &SIS8300BcmConfigArg4,
-													 &SIS8300BcmConfigArg5,
-													 &SIS8300BcmConfigArg6,
-													 &SIS8300BcmConfigArg7,
-													 &SIS8300BcmConfigArg8};
-static const iocshFuncDef configSIS8300Bcm = {"SIS8300BcmConfig", 9, SIS8300BcmConfigArgs};
-static void configSIS8300BcmCallFunc(const iocshArgBuf *args)
+static const iocshArg configArg0 = {"Port name",     iocshArgString};
+static const iocshArg configArg1 = {"Device path",   iocshArgString};
+static const iocshArg configArg2 = {"# channels",    iocshArgInt};
+static const iocshArg configArg3 = {"# samples",     iocshArgInt};
+static const iocshArg configArg4 = {"Data type",     iocshArgInt};
+static const iocshArg configArg5 = {"maxBuffers",    iocshArgInt};
+static const iocshArg configArg6 = {"maxMemory",     iocshArgInt};
+static const iocshArg configArg7 = {"priority",      iocshArgInt};
+static const iocshArg configArg8 = {"stackSize",     iocshArgInt};
+static const iocshArg * const BcmConfigArgs[] = {&configArg0,
+												 &configArg1,
+												 &configArg2,
+												 &configArg3,
+												 &configArg4,
+												 &configArg5,
+												 &configArg6,
+												 &configArg7,
+												 &configArg8};
+static const iocshFuncDef configBcm = {"BcmConfig", 9, BcmConfigArgs};
+static void configBcmCallFunc(const iocshArgBuf *args)
 {
-    SIS8300BcmConfig(args[0].sval, args[1].sval, args[2].ival, args[3].ival,
+    BcmConfig(args[0].sval, args[1].sval, args[2].ival, args[3].ival,
     		args[4].ival, args[5].ival, args[6].ival, args[7].ival, args[8].ival);
 }
 
 
-static void SIS8300BcmRegister(void)
+static void BcmRegister(void)
 {
-    iocshRegister(&configSIS8300Bcm, configSIS8300BcmCallFunc);
+    iocshRegister(&configBcm, configBcmCallFunc);
 }
 
 extern "C" {
-epicsExportRegistrar(SIS8300BcmRegister);
+epicsExportRegistrar(BcmRegister);
 }

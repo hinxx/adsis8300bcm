@@ -11,7 +11,9 @@ include $(TOP)/configure/CONFIG
 # Create and install (or just install)
 # databases, templates, substitutions like this
 
-DB += SIS8300bcm.template
+DB += bcmMain.template
+DB += bcmChannel.template
+DB += bcmProbe.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add
