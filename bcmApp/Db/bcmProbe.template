@@ -4,6 +4,12 @@
 # Hinko Kocevar
 # January 22, 2017
 
+record(stringout, "$(P)$(R)Name")
+{
+    field(VAL,  "$(NAME)")
+    info(autosaveFields, "VAL")
+}
+
 ## Register '0xn50' is RW (BCM_PROBE_SOURCE_SELECT)
 record(longout, "$(P)$(R)ProbeSrcSel")
 {

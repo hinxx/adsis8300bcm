@@ -4,6 +4,12 @@
 # Hinko Kocevar
 # January 22, 2017
 
+record(stringout, "$(P)$(R)Name")
+{
+    field(VAL,  "$(NAME)")
+    info(autosaveFields, "VAL")
+}
+
 ## Register '0xn00' is RW (BCM_ADC_TRIG_FINE_DELAY)
 record(longout, "$(P)$(R)TrigFineDelay")
 {
