@@ -3,9 +3,9 @@ import re
 
 print("Parser for DB file to generate asynPortDriver C++ elements")
 
-DB1 = "../SIS8300bcmApp/Db/bcmMain.template"
-DB2 = "../SIS8300bcmApp/Db/bcmChannel.template"
-DB3 = "../SIS8300bcmApp/Db/bcmProbe.template"
+DB1 = "../bcmApp/Db/bcmMain.template"
+DB2 = "../bcmApp/Db/bcmChannel.template"
+DB3 = "../bcmApp/Db/bcmProbe.template"
 
 def handleFile(fname):
     rec = False
@@ -13,6 +13,7 @@ def handleFile(fname):
     recAsynStr = None
     recAutoSave = False
     recDone = False
+    recReg = None
     recs = dict()
     
     f = open(fname, 'r')
@@ -21,6 +22,10 @@ def handleFile(fname):
         l = l.strip('\n')
         #print(l)
     
+        if l.startswith('## Register'):
+            m = re.match('## Register \'(0x[0-9A-Fn]+)\'', l)
+            recReg = re.sub('n', '', m.group(1))
+            
         if l.startswith('record'):
             rec = True
             m = re.match('record\(([a-z]+), \"(.*)\"', l)
@@ -44,14 +49,15 @@ def handleFile(fname):
         if rec and recDone and recAsynStr and recName:
             if recAsynStr not in recs:
                 recs[recAsynStr] = []
-            data = (recType, recName, recDTYP, recAsyn, recAsynStr, recAutoSave)
-            #print(data)
+            data = (recType, recName, recDTYP, recAsyn, recAsynStr, recAutoSave, recReg)
+            print(data)
             recs[recAsynStr].append(data)
             rec = False
             recName = None
             recAsynStr = None
             recAutoSave = False
             recDone = False
+            recReg = None
     
     f.close()
     #print(recs)
@@ -65,6 +71,7 @@ def generateC(fname):
     pp = []
     cc = []
     aa = []
+    rr = []
     for k, r in sorted(recs.items()):
         r = recs[k]
         #print(r)
@@ -87,9 +94,12 @@ def generateC(fname):
         for a in r:
             if a[5]:
                 aa.append(a[1])
+            if a[6]:
+                d = "#define %s_REG\t\t\t%s" % (r[0][4], a[6])
+                rr.append(d)
         
     print("Have %d records" % i)
-    return (ss, pp, cc, aa)
+    return (ss, pp, cc, aa, rr)
 
 data1 = generateC(DB1)
 data2 = generateC(DB2)
@@ -154,4 +164,14 @@ for d in data2[3]:
     print(d)
 print("")
 for d in data3[3]:
+    print(d)
+
+# show register addresses
+for d in data1[4]:
+    print(d)
+print("")
+for d in data2[4]:
+    print(d)
+print("")
+for d in data3[4]:
     print(d)

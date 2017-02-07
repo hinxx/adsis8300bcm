@@ -43,9 +43,9 @@ static const char *driverName = "Bcm";
 /* asyn addresses:
  * 0 .. 9    AI channels
  * 10 .. 19  BCM channels
- * 20 .. 23  Probe channels
  */
-#define BCM_ADDR		10
+#define BCM_ADDR_FIRST			10
+#define BCM_ADDR_COUNT			10
 
 /** Constructor for Bcm; most parameters are simply passed to ADSIS8300::ADSIS8300.
   * After calling the base class constructor this method creates a thread to compute the simulated detector data,
@@ -78,8 +78,6 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 
 {
     D(printf("%d addresses, %d parameters\n", maxAddr, NUM_BCM_PARAMS));
-
-//    this->mRegisterIndex = 0;
 
     createParam(BcmAllAlarmsString,		asynParamInt32,	&mBcmAllAlarms);
     createParam(BcmAuxClkAlarmString,		asynParamInt32,	&mBcmAuxClkAlarm);
