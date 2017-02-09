@@ -34,7 +34,7 @@
 #include <asynNDArrayDriver.h>
 #include <epicsExport.h>
 
-#include <ADSIS8300.h>
+#include <SIS8300.h>
 #include <bcm.h>
 
 
@@ -67,7 +67,7 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 		int maxAddr, int numSamples, NDDataType_t dataType,
 		int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
-    : ADSIS8300(portName, devicePath,
+    : SIS8300(portName, devicePath,
     		maxAddr,
 			BCM_NUM_PARAMS,
 			numSamples,
@@ -130,15 +130,15 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmPulseWidthString,		asynParamInt32,	&mBcmPulseWidth);
     createParam(BcmTrigFineDelayString,		asynParamInt32,	&mBcmTrigFineDelay);
     createParam(BcmTrigToPulseString,		asynParamInt32,	&mBcmTrigToPulse);
-    createParam(BcmUnderflowAlarmString,		asynParamInt32,	&mBcmUnderflow);
+    createParam(BcmUnderflowAlarmString,		asynParamInt32,	&mBcmUnderflowAlarm);
     createParam(BcmUpperThresholdString,		asynParamInt32,	&mBcmUpperThreshold);
     createParam(BcmUpperThresholdAlarmString,		asynParamInt32,	&mBcmUpperThresholdAlarm);
 
     createParam(BcmProbeSourceSelectString,		asynParamInt32,	&mBcmProbeSourceSelect);
 
-    this->lock();
-    initDevice();
-    this->unlock();
+//    this->lock();
+//    initDevice();
+//    this->unlock();
 
 	I(printf("Init done...\n"));
 }
@@ -152,6 +152,121 @@ Bcm::~Bcm() {
 
 	this->unlock();
 	I(printf("Shutdown complete!\n"));
+}
+
+template <typename epicsType> int Bcm::convertArraysT()
+{
+    size_t dims[2];
+    int numAiSamples;
+    NDDataType_t dataType;
+    epicsType *pData, *pVal;
+    epicsUInt16 *pRaw, *pChRaw;
+    int aich, i;
+    double convFactor, convOffset;
+    bool negative;
+
+	D(printf("Enter\n"));
+
+    getIntegerParam(NDDataType, (int *)&dataType);
+    getIntegerParam(mSISNumAiSamples, &numAiSamples);
+
+    /* local NDArray is for raw AI data samples */
+    if (! mRawDataArray) {
+    	return -1;
+    }
+    pRaw = (epicsUInt16 *)mRawDataArray->pData;
+
+    /* converted AI data samples of all channel are interleaved */
+    dims[0] = SIS8300_NUM_CHANNELS;
+    dims[1] = numAiSamples;
+
+    /* 0th NDArray is for converted AI data samples */
+    if (this->pArrays[0]) {
+    	this->pArrays[0]->release();
+    }
+    this->pArrays[0] = pNDArrayPool->alloc(2, dims, dataType, 0, 0);
+    pData = (epicsType *)this->pArrays[0]->pData;
+    memset(pData, 0, SIS8300_NUM_CHANNELS * numAiSamples * sizeof(epicsType));
+
+    for (aich = 0; aich < SIS8300_NUM_CHANNELS; aich++) {
+    	if (!(mChannelMask & (1 << aich))) {
+            continue;
+        }
+    	pChRaw = pRaw + (aich * numAiSamples);
+    	pVal = pData + aich;
+
+		getDoubleParam(aich, mSISConvFactor, &convFactor);
+		getDoubleParam(aich, mSISConvOffset, &convOffset);
+
+//		char fname[32];
+//		sprintf(fname, "/tmp/%d.txt", aich);
+//		FILE *fp = fopen(fname, "w");
+		D(printf("CH %d [%d] CF %f, CO %f: ", aich, numAiSamples, convFactor, convOffset));
+		for (i = 0; i < numAiSamples; i++) {
+			/* samples in channels 0 - 7 are signed 16-bit, samples in channel 8 and 9 are unsigned 16-bit */
+			if (aich > 7) {
+				*pVal = (epicsType)((double)*(pChRaw + i) * convFactor + convOffset);
+			} else {
+				negative = (*(pChRaw + i) & (1 << 15)) != 0;
+				if (negative) {
+					*pVal = (epicsType)((double)(*(pChRaw + i) | ~((1 << 16) - 1)) * convFactor + convOffset);
+				} else {
+					*pVal = (epicsType)((double)(*(pChRaw + i)) * convFactor + convOffset);
+				}
+//				printf("%f ", (double)*pVal);
+//				fprintf(fp, "%f\n", (double)*pVal);
+				pVal += SIS8300_NUM_CHANNELS;
+			}
+		}
+		D0(printf("\n"));
+//		fclose(fp);
+    }
+
+    return 0;
+}
+
+int Bcm::acquireArrays()
+{
+    int dataType;
+    int ret;
+
+	D(printf("Enter\n"));
+
+    ret = acquireRawArrays();
+    if (ret) {
+    	return ret;
+    }
+
+    getIntegerParam(NDDataType, &dataType);
+    switch (dataType) {
+        case NDInt8:
+            return convertArraysT<epicsInt8>();
+            break;
+        case NDUInt8:
+        	return convertArraysT<epicsUInt8>();
+            break;
+        case NDInt16:
+        	return convertArraysT<epicsInt16>();
+            break;
+        case NDUInt16:
+        	return convertArraysT<epicsUInt16>();
+            break;
+        case NDInt32:
+        	return convertArraysT<epicsInt32>();
+            break;
+        case NDUInt32:
+        	return convertArraysT<epicsUInt32>();
+            break;
+        case NDFloat32:
+        	return convertArraysT<epicsFloat32>();
+            break;
+        case NDFloat64:
+        	return convertArraysT<epicsFloat64>();
+            break;
+        default:
+        	return -1;
+        	break;
+    }
 }
 
 int Bcm::updateRegisterParameter(int index, int reg, int mask, int readFirst)
@@ -340,7 +455,7 @@ int Bcm::updateParameters()
 		ret |= updateRegisterParameter(i, mBcmPulsePastTriggerAlarm, BCM_PULSE_PAST_TRIGGER_ALARM_REG, 0x8, 1);
 		ret |= updateRegisterParameter(i, mBcmPulsePastLimitAlarm, BCM_PULSE_PAST_LIMIT_ALARM_REG, 0x10, 1);
 		ret |= updateRegisterParameter(i, mBcmOverflowAlarm, BCM_OVERFLOW_ALARM_REG, 0x20, 1);
-		ret |= updateRegisterParameter(i, mBcmUnderflow, BCM_UNDERFLOW_ALARM_REG, 0x40, 1);
+		ret |= updateRegisterParameter(i, mBcmUnderflowAlarm, BCM_UNDERFLOW_ALARM_REG, 0x40, 1);
 		ret |= updateRegisterParameter(i, mBcmAdcStuckAlarm, BCM_ADC_STUCK_ALARM_REG, 0x80, 1);
 
 	    /* Do callbacks so higher layers see any changes */
@@ -360,7 +475,6 @@ asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int addr;
     const char *name;
-    int ret;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
 
@@ -374,7 +488,7 @@ asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     /* If this parameter belongs to a base class call its method */
     if (function < BCM_FIRST_PARAM) {
-    	status = ADSIS8300::writeInt32(pasynUser, value);
+    	status = SIS8300::writeInt32(pasynUser, value);
     }
 
     /* Do callbacks so higher layers see any changes */
@@ -393,52 +507,6 @@ asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
-asynStatus Bcm::readInt32(asynUser *pasynUser, epicsInt32 *value)
-{
-    int addr;
-    const char *name;
-    int reg, ret;
-    unsigned int val;
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-
-    getAddress(pasynUser, &addr);
-    getParamName(function, &name);
-
-#if 0
-    if (function >= mRegisters[0]) {
-		D(printf("Enter '%s' %d (%d)\n", name, function, addr));
-
-		ret = sscanf(name, "%*s %X", &reg);
-		if (ret == 1) {
-			/* This is our BCM register access */
-			ret = SIS8300DRV_CALL("sis8300drv_reg_read", sis8300drv_reg_read(mSisDevice, reg, &val));
-			if (ret) {
-				status = asynError;
-			} else {
-				status = setIntegerParam(addr, function, val);
-				D(printf("Setting '%s' %d (%d) = %d\n", name, function, addr, val));
-			}
-		}
-    }
-#endif
-
-    if (status) {
-        asynPrint(pasynUser, ASYN_TRACE_ERROR,
-              "%s:readInt32 error, status=%d function=%d, value=%d\n",
-              driverName, status, function, *value);
-        return status;
-    } else {
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:readInt32: function=%d, value=%d\n",
-              driverName, function, *value);
-    }
-
-    // Call base class
-    status = ADSIS8300::readInt32(pasynUser, value);
-    return status;
-}
-
 /** Report status of the driver.
   * Prints details about the driver if details>0.
   * It then calls the ADDriver::report() method.
@@ -452,7 +520,7 @@ void Bcm::report(FILE *fp, int details)
     }
 
     /* Invoke the base class method */
-    ADSIS8300::report(fp, details);
+    SIS8300::report(fp, details);
 }
 
 /** Configuration command, called directly or from iocsh */

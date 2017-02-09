@@ -145,13 +145,13 @@
 #define BcmPulseWidthString			"BCM_PULSE_WIDTH"
 #define BcmTrigFineDelayString			"BCM_TRIG_FINE_DELAY"
 #define BcmTrigToPulseString			"BCM_TRIG_TO_PULSE"
-#define BcmUnderflowAlarmString			"BCM_UNDERFLOW"
+#define BcmUnderflowAlarmString			"BCM_UNDERFLOW_ALARM"
 #define BcmUpperThresholdString			"BCM_UPPER_THRESHOLD"
 #define BcmUpperThresholdAlarmString			"BCM_UPPER_THRESHOLD_ALARM"
 
 #define BcmProbeSourceSelectString			"BCM_PROBE_SOURCE_SELECT"
 
-class epicsShareClass Bcm : public ADSIS8300 {
+class epicsShareClass Bcm : public SIS8300 {
 public:
 	Bcm(const char *portName, const char *devicePath,
 			int maxAddr, int numTimePoints, NDDataType_t dataType,
@@ -160,7 +160,6 @@ public:
 
     /* These are the methods that we override from asynNDArrayDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
     virtual void report(FILE *fp, int details);
 
 protected:
@@ -216,13 +215,15 @@ protected:
 	int mBcmPulseWidth;
 	int mBcmTrigFineDelay;
 	int mBcmTrigToPulse;
-	int mBcmUnderflow;
+	int mBcmUnderflowAlarm;
 	int mBcmUpperThreshold;
 	int mBcmUpperThresholdAlarm;
 
 	int mBcmProbeSourceSelect;
 	#define BCM_LAST_PARAM mBcmProbeSourceSelect
 
+    template <typename epicsType> int convertArraysT();
+    virtual int acquireArrays();
     virtual int deviceDone();
     virtual int updateParameters();
 
