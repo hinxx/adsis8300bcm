@@ -4,7 +4,9 @@ $(P)$(R)CalPulse
 $(P)$(R)DiffWarnReset
 $(P)$(R)MainClkAlarm
 $(P)$(R)MaxPulseWidth
+$(P)$(R)MaxPulseWidthSrcSel
 $(P)$(R)MinTrigPeriod
+$(P)$(R)MinTrigPeriodSrcSel
 $(P)$(R)ResetAlarms
 $(P)$(R)RFQTransparency
 $(P)$(R)TrigTooFastAlarm

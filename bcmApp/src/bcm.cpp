@@ -69,7 +69,7 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 
     : ADSIS8300(portName, devicePath,
     		maxAddr,
-    		NUM_BCM_PARAMS,
+			BCM_NUM_PARAMS,
 			numSamples,
 			dataType,
 			maxBuffers, maxMemory,
@@ -77,7 +77,7 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 			stackSize)
 
 {
-    D(printf("%d addresses, %d parameters\n", maxAddr, NUM_BCM_PARAMS));
+    D(printf("%d addresses, %d parameters\n", maxAddr, BCM_NUM_PARAMS));
 
     createParam(BcmAllAlarmsString,		asynParamInt32,	&mBcmAllAlarms);
     createParam(BcmAuxClkAlarmString,		asynParamInt32,	&mBcmAuxClkAlarm);
@@ -90,13 +90,14 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmFwVersionString,		asynParamInt32,	&mBcmFwVersion);
     createParam(BcmMainClkAlarmString,		asynParamInt32,	&mBcmMainClkAlarm);
     createParam(BcmMaxPulseWidthString,		asynParamInt32,	&mBcmMaxPulseWidth);
+    createParam(BcmMaxPulseWidthSrcSelString,		asynParamInt32,	&mBcmMaxPulseWidthSrcSel);
     createParam(BcmMinTrigPeriodString,		asynParamInt32,	&mBcmMinTrigPeriod);
+    createParam(BcmMinTrigPeriodSrcSelString,		asynParamInt32,	&mBcmMinTrigPeriodSrcSel);
     createParam(BcmResetAlarmsString,		asynParamInt32,	&mBcmResetAlarms);
     createParam(BcmRfqTransparencyString,		asynParamInt32,	&mBcmRfqTransparency);
     createParam(BcmStatusString,		asynParamInt32,	&mBcmStatus);
     createParam(BcmSwVersionString,		asynParamInt32,	&mBcmSwVersion);
     createParam(BcmTrigPeriodString,		asynParamInt32,	&mBcmTrigPeriod);
-    createParam(BcmTrigPeriodSrcSelString,		asynParamInt32,	&mBcmTrigPeriodSrcSel);
     createParam(BcmTrigTooFastAlarmString,		asynParamInt32,	&mBcmTrigTooFastAlarm);
     createParam(BcmTrigTooLongAlarmString,		asynParamInt32,	&mBcmTrigTooLongAlarm);
     createParam(BcmTrigTooShortAlarmString,		asynParamInt32,	&mBcmTrigTooShortAlarm);
@@ -108,9 +109,10 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmAdcOffsErrorAvgString,		asynParamInt32,	&mBcmAdcOffsErrorAvg);
     createParam(BcmAdcOffsErrorIntegString,		asynParamInt32,	&mBcmAdcOffsErrorInteg);
     createParam(BcmAdcScaleString,		asynParamInt32,	&mBcmAdcScale);
+    createParam(BcmAdcStuckAlarmString,		asynParamInt32,	&mBcmAdcStuckAlarm);
     createParam(BcmCalPulseAmplEarlyString,		asynParamInt32,	&mBcmCalPulseAmplEarly);
     createParam(BcmCalPulseAmplLateString,		asynParamInt32,	&mBcmCalPulseAmplLate);
-    createParam(BcmDrooprateString,		asynParamInt32,	&mBcmDrooprate);
+    createParam(BcmDroopRateString,		asynParamInt32,	&mBcmDroopRate);
     createParam(BcmDroopBaselineString,		asynParamInt32,	&mBcmDroopBaseline);
     createParam(BcmDroopErrorString,		asynParamInt32,	&mBcmDroopError);
     createParam(BcmErrantThresholdString,		asynParamInt32,	&mBcmErrantThreshold);
@@ -126,9 +128,9 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmPulsePastLimitAlarmString,		asynParamInt32,	&mBcmPulsePastLimitAlarm);
     createParam(BcmPulsePastTriggerAlarmString,		asynParamInt32,	&mBcmPulsePastTriggerAlarm);
     createParam(BcmPulseWidthString,		asynParamInt32,	&mBcmPulseWidth);
-    createParam(BcmStuckAlarmString,		asynParamInt32,	&mBcmStuckAlarm);
     createParam(BcmTrigFineDelayString,		asynParamInt32,	&mBcmTrigFineDelay);
     createParam(BcmTrigToPulseString,		asynParamInt32,	&mBcmTrigToPulse);
+    createParam(BcmUnderflowAlarmString,		asynParamInt32,	&mBcmUnderflow);
     createParam(BcmUpperThresholdString,		asynParamInt32,	&mBcmUpperThreshold);
     createParam(BcmUpperThresholdAlarmString,		asynParamInt32,	&mBcmUpperThresholdAlarm);
 
@@ -152,6 +154,196 @@ Bcm::~Bcm() {
 	I(printf("Shutdown complete!\n"));
 }
 
+int Bcm::updateRegisterParameter(int index, int reg, int mask, int readFirst)
+{
+	return updateRegisterParameter(0, index, reg, mask, readFirst);
+}
+
+int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int readFirst)
+{
+	int changed;
+	asynStatus status;
+	int value;
+	unsigned int regValue;
+	int ret = 0;
+
+	/* adjust register address according to the list == BCM channel. */
+	if (list) {
+		reg = reg + BCM_CH0_OFFSET + ((list - BCM_ADDR_FIRST) * 0x100);
+	}
+
+	D(printf("list %d, index %d, reg %d, mask %x, read? %d\n", list, index, reg, mask, readFirst));
+
+	status = hasParamValueChanged(index, &changed);
+	if (status) {
+		return -1;
+	}
+
+	if (! changed) {
+		/* nothing to do .. */
+		return 0;
+	}
+
+	/* value has changed, update the FPGA register */
+	status = getIntegerParam(index, &value);
+	if (status) {
+		return -1;
+	}
+	regValue = 0;
+	if (readFirst) {
+		ret = SIS8300DRV_CALL("sis8300drv_reg_read", sis8300drv_reg_read(mSisDevice, reg, &regValue));
+		if (ret) {
+			return -1;
+		}
+		if (mask) {
+			regValue &= ~mask;
+			regValue |= (value & mask);
+		}
+	} else {
+		if (mask) {
+			regValue = (value & mask);
+		} else {
+			regValue = value;
+		}
+	}
+	ret = SIS8300DRV_CALL("sis8300drv_reg_write", sis8300drv_reg_write(mSisDevice, reg, regValue));
+	if (ret) {
+		return -1;
+	}
+
+	return 0;
+}
+
+int Bcm::refreshRegisterParameter(int index, int reg, int mask)
+{
+	return refreshRegisterParameter(0, index, reg, mask);
+}
+
+int Bcm::refreshRegisterParameter(int list, int index, int reg, int mask)
+{
+	asynStatus status;
+	int value;
+	unsigned int regValue;
+    const char *name;
+	int ret = 0;
+
+	/* adjust register address according to the list == BCM channel. */
+	if (list) {
+		reg = reg + BCM_CH0_OFFSET + ((list - BCM_ADDR_FIRST) * 0x100);
+	}
+
+	D(printf("list %d, index %d, reg %d, mask %x\n", list, index, reg, mask));
+
+	/* read FPGA register and update the parameter */
+	ret = SIS8300DRV_CALL("sis8300drv_reg_read", sis8300drv_reg_read(mSisDevice, reg, &regValue));
+	if (ret) {
+		return -1;
+	}
+	value = regValue;
+    getParamName(index, &name);
+	D(printf("Setting '%s' %d (%d) = %d\n", name, index, list, value));
+
+	status = setIntegerParam(list, index, value);
+	if (status) {
+		return -1;
+	}
+
+	return 0;
+}
+
+int Bcm::deviceDone()
+{
+	int i;
+	int ret = 0;
+
+	D(printf("Enter\n"));
+
+	ret |= refreshRegisterParameter(mBcmStatus, BCM_STATUS_REG, 0x3F);
+	ret |= refreshRegisterParameter(mBcmClkFreq, BCM_CLK_FREQ_REG, 0xFFFFF);
+	ret |= refreshRegisterParameter(mBcmTrigPeriod, BCM_TRIG_PERIOD_REG, 0xFFFFFFFF);
+	ret |= refreshRegisterParameter(mBcmTrigWidth, BCM_TRIG_WIDTH_REG, 0xFFFFF);
+	ret |= refreshRegisterParameter(mBcmFlatTopTime, BCM_FLAT_TOP_TIME_REG, 0xFFFFF);
+	ret |= refreshRegisterParameter(mBcmClkTrigAlarmsLatched, BCM_CLK_TRIG_ALARMS_LATCHED_REG, 0x1F);
+	ret |= refreshRegisterParameter(mBcmClkTrigAlarmsFirst, BCM_CLK_TRIG_ALARMS_FIRST_REG, 0x1F);
+
+	/* Do callbacks so higher layers see any changes */
+    callParamCallbacks(0);
+
+	for (i = BCM_ADDR_FIRST; i < (BCM_ADDR_FIRST + BCM_ADDR_COUNT); i++) {
+		ret |= refreshRegisterParameter(i, mBcmAdcOffsErrorAvg, BCM_ADC_OFFS_ERROR_AVG_REG, 0xFFFF);
+		ret |= refreshRegisterParameter(i, mBcmAdcOffsErrorInteg, BCM_ADC_OFFS_ERROR_INTEG_REG, 0xFFFFFF);
+		ret |= refreshRegisterParameter(i, mBcmTrigToPulse, BCM_TRIG_TO_PULSE_REG, 0x7FF);
+		ret |= refreshRegisterParameter(i, mBcmDroopError, BCM_DROOP_ERROR_REG, 0xFFFF);
+		ret |= refreshRegisterParameter(i, mBcmPulseWidth, BCM_PULSE_WIDTH_REG, 0xFFFFF);
+		ret |= refreshRegisterParameter(i, mBcmPulseCharge, BCM_PULSE_CHARGE_REG, 0xFFFFFFFF);
+		ret |= refreshRegisterParameter(i, mBcmFlatTopCharge, BCM_FLAT_TOP_CHARGE_REG, 0xFFFFFFFF);
+		ret |= refreshRegisterParameter(i, mBcmCalPulseAmplEarly, BCM_CAL_PULSE_AMPL_EARLY_REG, 0xFFFF);
+		ret |= refreshRegisterParameter(i, mBcmCalPulseAmplLate, BCM_CAL_PULSE_AMPL_LATE_REG, 0xFFFF);
+		ret |= refreshRegisterParameter(i, mBcmAdcAlarmsLatched, BCM_ADC_ALARMS_LATCHED_REG, 0xFF);
+		ret |= refreshRegisterParameter(i, mBcmAdcAlarmsFirst, BCM_ADC_ALARMS_FIRST_REG, 0xFF);
+
+	    /* Do callbacks so higher layers see any changes */
+	    callParamCallbacks(i);
+	}
+
+	return ret;
+}
+
+int Bcm::updateParameters()
+{
+	int i;
+	int ret = 0;
+
+	D(printf("Enter\n"));
+
+	ret |= updateRegisterParameter(mBcmMinTrigPeriodSrcSel, BCM_MIN_TRIG_PERIOD_SRC_SEL_REG, 0x1, 1);
+	ret |= updateRegisterParameter(mBcmMaxPulseWidthSrcSel, BCM_MAX_PULSE_WIDTH_SRC_SEL_REG, 0x2, 1);
+	ret |= updateRegisterParameter(mBcmRfqTransparency, BCM_RFQ_TRANSPARENCY_REG, 0xFFFF, 0);
+	ret |= updateRegisterParameter(mBcmDiffWarnReset, BCM_DIFF_WARN_RESET_REG, 0x1, 0);
+	ret |= updateRegisterParameter(mBcmMinTrigPeriod, BCM_MIN_TRIG_PERIOD_REG, 0xFFFF, 0);
+	ret |= updateRegisterParameter(mBcmMaxPulseWidth, BCM_MAX_PULSE_WIDTH_REG, 0x1FFF, 0);
+	ret |= updateRegisterParameter(mBcmCalPulse, BCM_CAL_PULSE_REG, 0x1, 0);
+	ret |= updateRegisterParameter(mBcmResetAlarms, BCM_RESET_ALARMS_REG, 0x1, 0);
+	ret |= updateRegisterParameter(mBcmAllAlarms, BCM_ALL_ALARMS_REG, 0x1, 0);
+	ret |= updateRegisterParameter(mBcmAuxClkAlarm, BCM_AUX_CLK_ALARM_REG, 0x1, 1);
+	ret |= updateRegisterParameter(mBcmMainClkAlarm, BCM_MAIN_CLK_ALARM_REG, 0x2, 1);
+	ret |= updateRegisterParameter(mBcmTrigTooShortAlarm, BCM_TRIG_TOO_SHORT_ALARM_REG, 0x4, 1);
+	ret |= updateRegisterParameter(mBcmTrigTooLongAlarm, BCM_TRIG_TOO_LONG_ALARM_REG, 0x8, 1);
+	ret |= updateRegisterParameter(mBcmTrigTooFastAlarm, BCM_TRIG_TOO_FAST_ALARM_REG, 0x10, 1);
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks(0);
+
+	D(printf("ret = %d\n", ret));
+
+	for (i = BCM_ADDR_FIRST; i < (BCM_ADDR_FIRST + BCM_ADDR_COUNT); i++) {
+		ret |= updateRegisterParameter(i, mBcmTrigFineDelay, BCM_TRIG_FINE_DELAY_REG, 0x7FF, 0);
+		ret |= updateRegisterParameter(i, mBcmAdcScale, BCM_ADC_SCALE_REG, 0xFFFF, 0);
+		ret |= updateRegisterParameter(i, mBcmUpperThreshold, BCM_UPPER_THRESHOLD_REG, 0xFFFF, 0);
+		ret |= updateRegisterParameter(i, mBcmLowerThreshold, BCM_LOWER_THRESHOLD_REG, 0xFFFF, 0);
+		ret |= updateRegisterParameter(i, mBcmErrantThreshold, BCM_ERRANT_THRESHOLD_REG, 0xFFFF, 0);
+		ret |= updateRegisterParameter(i, mBcmAdcOffset, BCM_ADC_OFFSET_REG, 0xFFFF, 0);
+		ret |= updateRegisterParameter(i, mBcmDroopRate, BCM_DROOP_RATE_REG, 0xFFFF, 0);
+		ret |= updateRegisterParameter(i, mBcmDroopBaseline, BCM_DROOP_BASELINE_REG, 0x1, 1);
+		ret |= updateRegisterParameter(i, mBcmNoiseFilter, BCM_NOISE_FILTER_REG, 0x2, 1);
+		ret |= updateRegisterParameter(i, mBcmLocationMebt, BCM_LOCATION_MEBT_REG, 0x10, 1);
+		ret |= updateRegisterParameter(i, mBcmLocationRfq, BCM_LOCATION_RFQ_REG, 0x20, 1);
+		ret |= updateRegisterParameter(i, mBcmUpperThresholdAlarm, BCM_UPPER_THRESHOLD_ALARM_REG, 0x1, 1);
+		ret |= updateRegisterParameter(i, mBcmLowerThresholdAlarm, BCM_LOWER_THRESHOLD_ALARM_REG, 0x2, 1);
+		ret |= updateRegisterParameter(i, mBcmErrantThresholdAlarm, BCM_ERRANT_THRESHOLD_ALARM_REG, 0x4, 1);
+		ret |= updateRegisterParameter(i, mBcmPulsePastTriggerAlarm, BCM_PULSE_PAST_TRIGGER_ALARM_REG, 0x8, 1);
+		ret |= updateRegisterParameter(i, mBcmPulsePastLimitAlarm, BCM_PULSE_PAST_LIMIT_ALARM_REG, 0x10, 1);
+		ret |= updateRegisterParameter(i, mBcmOverflowAlarm, BCM_OVERFLOW_ALARM_REG, 0x20, 1);
+		ret |= updateRegisterParameter(i, mBcmUnderflow, BCM_UNDERFLOW_ALARM_REG, 0x40, 1);
+		ret |= updateRegisterParameter(i, mBcmAdcStuckAlarm, BCM_ADC_STUCK_ALARM_REG, 0x80, 1);
+
+	    /* Do callbacks so higher layers see any changes */
+	    callParamCallbacks(i);
+	}
+
+	D(printf("ret = %d\n", ret));
+	return ret;
+}
 
 /** Called when asyn clients call pasynInt32->write().
   * This function performs actions for some parameters.
@@ -162,7 +354,7 @@ asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int addr;
     const char *name;
-    int reg, ret;
+    int ret;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
 
@@ -174,23 +366,10 @@ asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
      * status at the end, but that's OK */
     status = setIntegerParam(addr, function, value);
 
-#if 0
-    if (function >= mRegisters[0]) {
-		ret = sscanf(name, "%*s %X", &reg);
-		if (ret == 1) {
-			/* This is our BCM register access */
-			ret = SIS8300DRV_CALL("sis8300drv_reg_write", sis8300drv_reg_write(mSisDevice, reg, value));
-			if (ret) {
-				status = asynError;
-			}
-		}
-    } else {
-        /* If this parameter belongs to a base class call its method */
-        if (function < mRegisters[0]) {
-        	status = ADSIS8300::writeInt32(pasynUser, value);
-        }
+    /* If this parameter belongs to a base class call its method */
+    if (function < BCM_FIRST_PARAM) {
+    	status = ADSIS8300::writeInt32(pasynUser, value);
     }
-#endif
 
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks(addr);

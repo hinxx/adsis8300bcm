@@ -32,13 +32,14 @@
 #define BCM_FW_VERSION_REG			0x400
 #define BCM_MAIN_CLK_ALARM_REG			0x432
 #define BCM_MAX_PULSE_WIDTH_REG			0x413
+#define BCM_MAX_PULSE_WIDTH_SRC_SEL_REG			0x402
 #define BCM_MIN_TRIG_PERIOD_REG			0x412
+#define BCM_MIN_TRIG_PERIOD_SRC_SEL_REG			0x402
 #define BCM_RESET_ALARMS_REG			0x430
 #define BCM_RFQ_TRANSPARENCY_REG			0x410
 #define BCM_STATUS_REG			0x420
 #define BCM_SW_VERSION_REG			0x401
 #define BCM_TRIG_PERIOD_REG			0x422
-#define BCM_TRIG_PERIOD_SRC_SEL_REG			0x402
 #define BCM_TRIG_TOO_FAST_ALARM_REG			0x432
 #define BCM_TRIG_TOO_LONG_ALARM_REG			0x432
 #define BCM_TRIG_TOO_SHORT_ALARM_REG			0x432
@@ -50,9 +51,10 @@
 #define BCM_ADC_OFFS_ERROR_AVG_REG			0x10
 #define BCM_ADC_OFFS_ERROR_INTEG_REG			0x11
 #define BCM_ADC_SCALE_REG			0x01
+#define BCM_ADC_STUCK_ALARM_REG			0x08
 #define BCM_CAL_PULSE_AMPL_EARLY_REG			0x17
 #define BCM_CAL_PULSE_AMPL_LATE_REG			0x18
-#define BCM_DROOPRATE_REG			0x06
+#define BCM_DROOP_RATE_REG			0x06
 #define BCM_DROOP_BASELINE_REG			0x07
 #define BCM_DROOP_ERROR_REG			0x13
 #define BCM_ERRANT_THRESHOLD_REG			0x04
@@ -68,9 +70,9 @@
 #define BCM_PULSE_PAST_LIMIT_ALARM_REG			0x08
 #define BCM_PULSE_PAST_TRIGGER_ALARM_REG			0x08
 #define BCM_PULSE_WIDTH_REG			0x14
-#define BCM_STUCK_ALARM_REG			0x08
 #define BCM_TRIG_FINE_DELAY_REG			0x00
 #define BCM_TRIG_TO_PULSE_REG			0x12
+#define BCM_UNDERFLOW_ALARM_REG			0x08
 #define BCM_UPPER_THRESHOLD_REG			0x02
 #define BCM_UPPER_THRESHOLD_ALARM_REG			0x08
 
@@ -103,13 +105,14 @@
 #define BcmFwVersionString			"BCM_FW_VERSION"
 #define BcmMainClkAlarmString			"BCM_MAIN_CLK_ALARM"
 #define BcmMaxPulseWidthString			"BCM_MAX_PULSE_WIDTH"
+#define BcmMaxPulseWidthSrcSelString			"BCM_MAX_PULSE_WIDTH_SRC_SEL"
 #define BcmMinTrigPeriodString			"BCM_MIN_TRIG_PERIOD"
+#define BcmMinTrigPeriodSrcSelString			"BCM_MIN_TRIG_PERIOD_SRC_SEL"
 #define BcmResetAlarmsString			"BCM_RESET_ALARMS"
 #define BcmRfqTransparencyString			"BCM_RFQ_TRANSPARENCY"
 #define BcmStatusString			"BCM_STATUS"
 #define BcmSwVersionString			"BCM_SW_VERSION"
 #define BcmTrigPeriodString			"BCM_TRIG_PERIOD"
-#define BcmTrigPeriodSrcSelString			"BCM_TRIG_PERIOD_SRC_SEL"
 #define BcmTrigTooFastAlarmString			"BCM_TRIG_TOO_FAST_ALARM"
 #define BcmTrigTooLongAlarmString			"BCM_TRIG_TOO_LONG_ALARM"
 #define BcmTrigTooShortAlarmString			"BCM_TRIG_TOO_SHORT_ALARM"
@@ -121,9 +124,10 @@
 #define BcmAdcOffsErrorAvgString			"BCM_ADC_OFFS_ERROR_AVG"
 #define BcmAdcOffsErrorIntegString			"BCM_ADC_OFFS_ERROR_INTEG"
 #define BcmAdcScaleString			"BCM_ADC_SCALE"
+#define BcmAdcStuckAlarmString			"BCM_ADC_STUCK_ALARM"
 #define BcmCalPulseAmplEarlyString			"BCM_CAL_PULSE_AMPL_EARLY"
 #define BcmCalPulseAmplLateString			"BCM_CAL_PULSE_AMPL_LATE"
-#define BcmDrooprateString			"BCM_DROOPRATE"
+#define BcmDroopRateString			"BCM_DROOP_RATE"
 #define BcmDroopBaselineString			"BCM_DROOP_BASELINE"
 #define BcmDroopErrorString			"BCM_DROOP_ERROR"
 #define BcmErrantThresholdString			"BCM_ERRANT_THRESHOLD"
@@ -139,9 +143,9 @@
 #define BcmPulsePastLimitAlarmString			"BCM_PULSE_PAST_LIMIT_ALARM"
 #define BcmPulsePastTriggerAlarmString			"BCM_PULSE_PAST_TRIGGER_ALARM"
 #define BcmPulseWidthString			"BCM_PULSE_WIDTH"
-#define BcmStuckAlarmString			"BCM_STUCK_ALARM"
 #define BcmTrigFineDelayString			"BCM_TRIG_FINE_DELAY"
 #define BcmTrigToPulseString			"BCM_TRIG_TO_PULSE"
+#define BcmUnderflowAlarmString			"BCM_UNDERFLOW"
 #define BcmUpperThresholdString			"BCM_UPPER_THRESHOLD"
 #define BcmUpperThresholdAlarmString			"BCM_UPPER_THRESHOLD_ALARM"
 
@@ -152,7 +156,7 @@ public:
 	Bcm(const char *portName, const char *devicePath,
 			int maxAddr, int numTimePoints, NDDataType_t dataType,
 			int maxBuffers, size_t maxMemory, int priority, int stackSize);
-	~Bcm();
+	virtual ~Bcm();
 
     /* These are the methods that we override from asynNDArrayDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -161,7 +165,7 @@ public:
 
 protected:
 	int mBcmAllAlarms;
-	#define FIRST_BCM_PARAM mBcmAllAlarms
+	#define BCM_FIRST_PARAM mBcmAllAlarms
 	int mBcmAuxClkAlarm;
 	int mBcmCalPulse;
 	int mBcmClkFreq;
@@ -172,13 +176,14 @@ protected:
 	int mBcmFwVersion;
 	int mBcmMainClkAlarm;
 	int mBcmMaxPulseWidth;
+	int mBcmMaxPulseWidthSrcSel;
 	int mBcmMinTrigPeriod;
+	int mBcmMinTrigPeriodSrcSel;
 	int mBcmResetAlarms;
 	int mBcmRfqTransparency;
 	int mBcmStatus;
 	int mBcmSwVersion;
 	int mBcmTrigPeriod;
-	int mBcmTrigPeriodSrcSel;
 	int mBcmTrigTooFastAlarm;
 	int mBcmTrigTooLongAlarm;
 	int mBcmTrigTooShortAlarm;
@@ -190,9 +195,10 @@ protected:
 	int mBcmAdcOffsErrorAvg;
 	int mBcmAdcOffsErrorInteg;
 	int mBcmAdcScale;
+	int mBcmAdcStuckAlarm;
 	int mBcmCalPulseAmplEarly;
 	int mBcmCalPulseAmplLate;
-	int mBcmDrooprate;
+	int mBcmDroopRate;
 	int mBcmDroopBaseline;
 	int mBcmDroopError;
 	int mBcmErrantThreshold;
@@ -208,17 +214,23 @@ protected:
 	int mBcmPulsePastLimitAlarm;
 	int mBcmPulsePastTriggerAlarm;
 	int mBcmPulseWidth;
-	int mBcmStuckAlarm;
 	int mBcmTrigFineDelay;
 	int mBcmTrigToPulse;
+	int mBcmUnderflow;
 	int mBcmUpperThreshold;
 	int mBcmUpperThresholdAlarm;
 
 	int mBcmProbeSourceSelect;
-	#define LAST_BCM_PARAM mBcmProbeSourceSelect
+	#define BCM_LAST_PARAM mBcmProbeSourceSelect
+
+    virtual int deviceDone();
+    virtual int updateParameters();
 
 private:
-
+    int updateRegisterParameter(int index, int reg, int mask, int readFirst);
+    int updateRegisterParameter(int list, int index, int reg, int mask, int readFirst);
+    int refreshRegisterParameter(int index, int reg, int mask);
+    int refreshRegisterParameter(int list, int index, int reg, int mask);
 };
 
-#define NUM_BCM_PARAMS ((int)(&LAST_BCM_PARAM - &FIRST_BCM_PARAM + 1))
+#define BCM_NUM_PARAMS ((int)(&BCM_LAST_PARAM - &BCM_FIRST_PARAM + 1))

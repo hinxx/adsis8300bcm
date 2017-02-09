@@ -39,11 +39,37 @@ record(longin, "$(P)$(R)SWVersion_RBV")
     field(SCAN, "I/O Intr")
 }
 
-## Register '0x402' is RO (BCM_INT_MIN_TRIG_PERIOD_SRC_SEL)
-record(bi, "$(P)$(R)TrigPeriodSrcSel_RBV")
+## Register '0x402' is RW (BCM_INT_MIN_TRIG_PERIOD_SRC_SEL)
+record(bo, "$(P)$(R)MinTrigPeriodSrcSel")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_PERIOD_SRC_SEL")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MIN_TRIG_PERIOD_SRC_SEL")
+    field(ZNAM, "FW register")
+    field(ONAM, "MRF tming")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)MinTrigPeriodSrcSel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MIN_TRIG_PERIOD_SRC_SEL")
+    field(ZNAM, "FW register")
+    field(ONAM, "MRF tming")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x402' is RO (BCM_INT_MIN_TRIG_PERIOD_SRC_SEL)
+record(bo, "$(P)$(R)MaxPulseWidthSrcSel")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAX_PULSE_WIDTH_SRC_SEL")
+    field(ZNAM, "FW register")
+    field(ONAM, "MRF tming")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)MaxPulseWidthSrcSel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAX_PULSE_WIDTH_SRC_SEL")
     field(ZNAM, "FW register")
     field(ONAM, "MRF tming")
     field(SCAN, "I/O Intr")
