@@ -211,6 +211,12 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 		return -1;
 	}
 
+	/* clear the value has changed flag */
+	status = clearParamValueChanged(index);
+	if (status) {
+		return -1;
+	}
+
 	return 0;
 }
 
