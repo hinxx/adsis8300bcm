@@ -47,9 +47,9 @@ static const char *driverName = "Bcm";
 #define BCM_ADDR_FIRST			10
 #define BCM_ADDR_COUNT			10
 
-/** Constructor for Bcm; most parameters are simply passed to ADSIS8300::ADSIS8300.
+/** Constructor for Bcm; most parameters are simply passed to SIS8300::SIS8300.
   * After calling the base class constructor this method creates a thread to compute the simulated detector data,
-  * and sets reasonable default values for parameters defined in this class and ADSIS8300.
+  * and sets reasonable default values for parameters defined in this class and SIS8300.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] devicePath The path to the /dev entry.
   * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.

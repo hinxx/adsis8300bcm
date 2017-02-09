@@ -16,5 +16,5 @@ Release Notes
 R0-1 (February XXX, 2017)
 ==========================
 * Initial alpha support.
-  Based on ADSIS8300.
+  Based on SIS8300.
   Requires ADCore R2-5 or higher.
