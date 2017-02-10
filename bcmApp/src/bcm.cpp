@@ -153,7 +153,7 @@ Bcm::~Bcm() {
 	this->unlock();
 	I(printf("Shutdown complete!\n"));
 }
-
+#if 0
 template <typename epicsType> int Bcm::convertArraysT()
 {
     size_t dims[2];
@@ -220,6 +220,216 @@ template <typename epicsType> int Bcm::convertArraysT()
 		}
 		D0(printf("\n"));
 //		fclose(fp);
+    }
+
+    return 0;
+}
+#endif
+
+
+/** Template function to compute the simulated detector data for any data type */
+template <typename epicsType> int Bcm::convertAIArraysT(int aich)
+{
+    int numAiSamples;
+    epicsType *pData, *pVal;
+    epicsUInt16 *pRaw, *pChRaw;
+    int i;
+    double convFactor, convOffset;
+    bool negative;
+
+	D(printf("Enter\n"));
+
+    getIntegerParam(mSISNumAiSamples, &numAiSamples);
+
+    /* local NDArray is for raw AI data samples */
+    if (! mRawDataArray) {
+    	return -1;
+    }
+    pRaw = (epicsUInt16 *)mRawDataArray->pData;
+
+    /* 0th NDArray is for converted AI data samples */
+    if (! this->pArrays[0]) {
+    	return -1;
+    }
+    pData = (epicsType *)this->pArrays[0]->pData;
+	pChRaw = pRaw + (aich * numAiSamples);
+	pVal = pData + aich;
+	getDoubleParam(aich, mSISConvFactor, &convFactor);
+	getDoubleParam(aich, mSISConvOffset, &convOffset);
+
+//	char fname[32];
+//	sprintf(fname, "/tmp/%d.txt", aich);
+//	FILE *fp = fopen(fname, "w");
+	D(printf("CH %d [%d] ", aich, numAiSamples));
+	for (i = 0; i < numAiSamples; i++) {
+		negative = (*(pChRaw + i) & (1 << 15)) != 0;
+		if (negative) {
+			*pVal = (epicsType)((double)(*(pChRaw + i) | ~((1 << 16) - 1)) * convFactor + convOffset);
+		} else {
+			*pVal = (epicsType)((double)(*(pChRaw + i)) * convFactor + convOffset);
+		}
+
+//		printf("%f ", (double)*pVal);
+//		fprintf(fp, "%f\n", (double)*pVal);
+		pVal += SIS8300DRV_NUM_AI_CHANNELS;
+	}
+	D0(printf("\n"));
+//	fclose(fp);
+
+    return 0;
+}
+
+template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
+{
+    int numAiSamples;
+    int numBCMSamples;
+    epicsType *pData, *pVal;
+    epicsUInt16 *pRaw, *pChRaw;
+    int i, j, k;
+//    double converted;
+    double convFactor, convOffset;
+    bool negative;
+
+	D(printf("Enter\n"));
+
+    getIntegerParam(mSISNumAiSamples, &numAiSamples);
+    numBCMSamples = (numAiSamples / 8) - 2;
+
+    /* local NDArray is for raw AI data samples */
+    if (! mRawDataArray) {
+    	return -1;
+    }
+    pRaw = (epicsUInt16 *)mRawDataArray->pData;
+    /* 1st NDArray is for BPM 1 data samples */
+    if (! this->pArrays[1]) {
+    	return -1;
+    }
+    pData = (epicsType *)this->pArrays[1]->pData;
+
+	i = 0;
+	j = 0;
+	pChRaw = pRaw + (aich * numAiSamples);
+	pVal = pData;
+
+	D(printf("CH %d [%d] BCM samples %d\n", aich, numAiSamples, numBCMSamples));
+
+//	char fname[32];
+//	sprintf(fname, "/tmp/bpm_X1_%d.txt", aich);
+//	FILE *fp = fopen(fname, "w");
+	while (i < numAiSamples) {
+		/* since will always take less IQ samples from raw data than available
+		 * we need to bail out when desired amount was collected */
+		if (j == numBCMSamples) {
+			break;
+		}
+
+		assert(i < numAiSamples);
+
+		if (aich == 0) {
+			getDoubleParam(aich, mSISConvFactor, &convFactor);
+			getDoubleParam(aich, mSISConvOffset, &convOffset);
+
+			/* BCM 1 .. 8 data is here */
+			for (k = 0; k < 8; k++) {
+				negative = (*(pChRaw + k) & (1 << 15)) != 0;
+				if (negative) {
+					*(pVal + k) = (epicsType)((double)(*(pChRaw + k) | ~((1 << 16) - 1)) * convFactor + convOffset);
+				} else {
+					*(pVal + k) = (epicsType)((double)(*(pChRaw + k)) * convFactor + convOffset);
+				}
+			}
+		} else if (aich == 1) {
+			getDoubleParam(aich, mSISConvFactor, &convFactor);
+			getDoubleParam(aich, mSISConvOffset, &convOffset);
+
+			/* BCM 9 .. 10 data is here */
+			for (k = 0; k < 2; k++) {
+				negative = (*(pChRaw + k) & (1 << 15)) != 0;
+				if (negative) {
+					*(pVal + k) = (epicsType)((double)(*(pChRaw + k) | ~((1 << 16) - 1)) * convFactor + convOffset);
+				} else {
+					*(pVal + k) = (epicsType)((double)(*(pChRaw + k)) * convFactor + convOffset);
+				}
+			}
+		} else {
+			E(printf("Should not be here!!!\n"));
+			assert(1 == 0);
+		}
+
+		/* adjust raw AI offset */
+		i += 8;
+		/* adjust raw AI data pointer */
+		pChRaw += 8;
+		/* adjust BCM offset for all channels */
+		j++;
+		/* adjust BCM data pointer */
+		pVal += BCM_NUM_CHANNELS;
+		}
+//		fclose(fp);
+
+    return 0;
+}
+
+template <typename epicsType> int Bcm::convertArraysT()
+{
+    size_t dims[2];
+    int numAiSamples;
+    int numBCMSamples;
+    NDDataType_t dataType;
+    epicsType *pData;
+    int aich;
+    int ret;
+
+	D(printf("Enter\n"));
+
+    getIntegerParam(NDDataType, (int *)&dataType);
+    getIntegerParam(mSISNumAiSamples, &numAiSamples);
+    numBCMSamples = (numAiSamples / 8) - 2;
+
+    /* local NDArray is for raw AI data samples */
+    if (! mRawDataArray) {
+    	return -1;
+    }
+
+    /* converted AI data samples of all channel are interleaved */
+    dims[0] = SIS8300_NUM_CHANNELS;
+    dims[1] = numAiSamples;
+
+    /* 0th NDArray is for converted AI data samples */
+    if (this->pArrays[0]) {
+    	this->pArrays[0]->release();
+    }
+    this->pArrays[0] = pNDArrayPool->alloc(2, dims, dataType, 0, 0);
+    pData = (epicsType *)this->pArrays[0]->pData;
+    memset(pData, 0, SIS8300_NUM_CHANNELS * numAiSamples * sizeof(epicsType));
+
+    /* converted BCM data samples of all channels are interleaved */
+    dims[0] = BCM_NUM_CHANNELS;
+    dims[1] = numBCMSamples;
+
+    /* 1st NDArray is for converted BCM data samples */
+    if (this->pArrays[1]) {
+    	this->pArrays[1]->release();
+    }
+    this->pArrays[1] = pNDArrayPool->alloc(2, dims, dataType, 0, 0);
+    pData = (epicsType *)this->pArrays[1]->pData;
+    memset(pData, 0, BCM_NUM_CHANNELS * numBCMSamples * sizeof(epicsType));
+
+    for (aich = 0; aich < SIS8300_NUM_CHANNELS; aich++) {
+        if (!(mChannelMask & (1 << aich))) {
+            continue;
+        }
+
+		if (aich > 2) {
+			/* AI data is here */
+			ret = convertAIArraysT<epicsType>(aich);
+		} else {
+			/* BCM data is here */
+			ret = convertBCMArraysT<epicsType>(aich);
+		}
+		if (ret) {
+			return ret;
+		}
     }
 
     return 0;
