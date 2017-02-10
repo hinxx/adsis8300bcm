@@ -80,10 +80,6 @@ ADSIS8300bcm::ADSIS8300bcm(const char *portName, const char *devicePath,
 
     this->mRegisterIndex = 0;
 
-    this->lock();
-    initDevice();
-    this->unlock();
-
 	I(printf("Init done...\n"));
 }
 
