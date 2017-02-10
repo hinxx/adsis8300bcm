@@ -1,0 +1,69 @@
+Klemen about BCM probes:
+
+Luckily there are probe channel that can help you determine if the pulse has indeed come within the right window. I suggest that you set:
+probe1 - register 0x550 to decimal value 10, this will allow you to observe the trigger input on probe 1. Note that this is single bit value, you will get 1 or 0!
+probe2 - register 0x650 to decimal value 11, this will allow you to observe window where beam is expected. Note that this is single bit value, you will get 1 or 0!
+
+First plot the channels together with probe1 and probe2 and make sure that the pulse is indeed within the allowed time window.
+
+Keep in mind that adc0-adc7 are signed values and adc8-9 are unsigned.
+
+Here are also some other configuration for the probes (for the reference):
+
+    0..9: ADC channel values with offset removed
+      10: Trigger input
+      11: SINGLE BITS: Window where beam is expected
+      12: SINGLE BITS: Time windows where lower threshold and flattop current measurement is active
+      13: SINGLE BITS: Time window for charge measurement and NOT errant pulse detection
+      14: SINGLE BITS: Time window for inhibit baseliene tracking, dependent on (calibration ON or OFF)
+      15: SINGLE BITS: Raw alarm bits [15:0] (not latched)
+  16..25 (0x10..0x17): Processed ADC values
+      26: Storage trigger and busy signal
+      27: Calibration signals
+      28: MPS interlock unlatched
+      29: clk_aux sampled with 88M: will show 125 Mhz - 88.0525 MHz = 36.9475 MHz (noisy!)
+      30: Reserve
+      31: Reserve
+      36: Fiber input 0
+      37: Fiber input 1
+      38: Relax amplification (see av4_relax_diff_at_slope_in)
+      63: Always 16384
+
+
+Matthias about ADC Scale factor:
+
+Where the scale factor (i.e 0x6400) come from:
+
+- 100 mA beam current ==> 1V at the ADC Input ==> 32768 at ADC Output (for exact analogue scale factors)
+- The shape output is specified in [mA/256] Units, so 100 mA correspond to 25600
+- As the scale factor is in 2^-15 Units (0x8000 will translate ADC values 1:1 to the shape output),
+  the scale factor 0x6400 will translate 32768 ADC units to 25600 units at the shape output as desired.
+
+
+[Hooman     I did some tests and it turned out that the ADC output reaches its max with an input
+            voltage of ~1.1 V. So, in order to get the current value in mA, do we need to slightly
+            change the division factor (i.e. 256)? Or should we expect this to be done automatically
+            through calibration?
+[Matthias]  This is done "automatically" through calibration: calibration will adapt the "0x6400
+            scale factor" by a Software algorithm. The division factors for output ports are
+            fixed numbers (i.e. 256).
+
+[Hooman]    Is the 0x6400 scale factor a “set-and-don’t-change” value? In other words: if we set
+            it to another value, does it mean that part of the FW may not work correctly?
+
+[Matthias]  This is a factor which has to be adapted to do the calibration. It compensates all
+            deviations of scales from the beam current to the ADC raw values.
+
+[Hooman]    It seems there are several other parameters in the FW that need to be converted
+            to appropriate units for the sake of display on the operator screen. That includes
+            ex. the offset, droop, measured pulse width etc. Can you please give some
+            clarification on what are the conversion factors?
+
+[Matthias]  Please have a look into the header of file ESS_BCM_TOP.vhd (my original version I
+            put it into the ESS bitbucket) where abbreviations and all ports are described
+            - the units are described there in the rectangular brackets: i.e. the unit for
+            measured pulse width is "1/88M".
+
+            See the explanations in the header: <"1/88M" means 1/88.0525 MHz = 11.35686 ns>
+            ==> pulse width is given in 11.35686 ns units (which is one "88 MHz" clock cycle).
+
