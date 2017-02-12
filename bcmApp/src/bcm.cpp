@@ -79,6 +79,9 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 {
     D(printf("%d addresses, %d parameters\n", maxAddr, BCM_NUM_PARAMS));
 
+    /* adjust number of NDArrays we need to handle, 0 - AI, 1 - BCM */
+    mNumArrays = 2;
+
     createParam(BcmAllAlarmsString,		asynParamInt32,	&mBcmAllAlarms);
     createParam(BcmAuxClkAlarmString,		asynParamInt32,	&mBcmAuxClkAlarm);
     createParam(BcmCalPulseString,		asynParamInt32,	&mBcmCalPulse);
@@ -136,98 +139,33 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 
     createParam(BcmProbeSourceSelectString,		asynParamInt32,	&mBcmProbeSourceSelect);
 
-//    this->lock();
-//    initDevice();
-//    this->unlock();
+    this->lock();
+    initDevice();
+    this->unlock();
 
 	I(printf("Init done...\n"));
 }
 
 Bcm::~Bcm() {
-	D(printf("Shutdown and freeing up memory...\n"));
-
-	this->lock();
-	D(printf("Data thread is already down!\n"));
-	destroyDevice();
-
-	this->unlock();
 	I(printf("Shutdown complete!\n"));
 }
-#if 0
-template <typename epicsType> int Bcm::convertArraysT()
+
+int Bcm::initDevice()
 {
-    size_t dims[2];
-    int numAiSamples;
-    NDDataType_t dataType;
-    epicsType *pData, *pVal;
-    epicsUInt16 *pRaw, *pChRaw;
-    int aich, i;
-    double convFactor, convOffset;
-    bool negative;
+    unsigned int firmwareVersion;
 
-	D(printf("Enter\n"));
+    D(printf("Enter\n"));
 
-    getIntegerParam(NDDataType, (int *)&dataType);
-    getIntegerParam(mSISNumAiSamples, &numAiSamples);
+	SIS8300DRV_CALL_RET("sis8300drv_reg_read", sis8300drv_reg_read(mSisDevice, BCM_FW_VERSION_REG, &firmwareVersion));
 
-    /* local NDArray is for raw AI data samples */
-    if (! mRawDataArray) {
-    	return -1;
-    }
-    pRaw = (epicsUInt16 *)mRawDataArray->pData;
+	setIntegerParam(mBcmFwVersion, firmwareVersion >> 16);
+	callParamCallbacks(0);
 
-    /* converted AI data samples of all channel are interleaved */
-    dims[0] = SIS8300_NUM_CHANNELS;
-    dims[1] = numAiSamples;
+	I(printf("BCM firmware version 0x%X\n", firmwareVersion >> 16));
 
-    /* 0th NDArray is for converted AI data samples */
-    if (this->pArrays[0]) {
-    	this->pArrays[0]->release();
-    }
-    this->pArrays[0] = pNDArrayPool->alloc(2, dims, dataType, 0, 0);
-    pData = (epicsType *)this->pArrays[0]->pData;
-    memset(pData, 0, SIS8300_NUM_CHANNELS * numAiSamples * sizeof(epicsType));
-
-    for (aich = 0; aich < SIS8300_NUM_CHANNELS; aich++) {
-    	if (!(mChannelMask & (1 << aich))) {
-            continue;
-        }
-    	pChRaw = pRaw + (aich * numAiSamples);
-    	pVal = pData + aich;
-
-		getDoubleParam(aich, mSISConvFactor, &convFactor);
-		getDoubleParam(aich, mSISConvOffset, &convOffset);
-
-//		char fname[32];
-//		sprintf(fname, "/tmp/%d.txt", aich);
-//		FILE *fp = fopen(fname, "w");
-		D(printf("CH %d [%d] CF %f, CO %f: ", aich, numAiSamples, convFactor, convOffset));
-		for (i = 0; i < numAiSamples; i++) {
-			/* samples in channels 0 - 7 are signed 16-bit, samples in channel 8 and 9 are unsigned 16-bit */
-			if (aich > 7) {
-				*pVal = (epicsType)((double)*(pChRaw + i) * convFactor + convOffset);
-			} else {
-				negative = (*(pChRaw + i) & (1 << 15)) != 0;
-				if (negative) {
-					*pVal = (epicsType)((double)(*(pChRaw + i) | ~((1 << 16) - 1)) * convFactor + convOffset);
-				} else {
-					*pVal = (epicsType)((double)(*(pChRaw + i)) * convFactor + convOffset);
-				}
-//				printf("%f ", (double)*pVal);
-//				fprintf(fp, "%f\n", (double)*pVal);
-				pVal += SIS8300_NUM_CHANNELS;
-			}
-		}
-		D0(printf("\n"));
-//		fclose(fp);
-    }
-
-    return 0;
+	return 0;
 }
-#endif
 
-
-/** Template function to compute the simulated detector data for any data type */
 template <typename epicsType> int Bcm::convertAIArraysT(int aich)
 {
     int numAiSamples;
@@ -257,9 +195,9 @@ template <typename epicsType> int Bcm::convertAIArraysT(int aich)
 	getDoubleParam(aich, mSISConvFactor, &convFactor);
 	getDoubleParam(aich, mSISConvOffset, &convOffset);
 
-//	char fname[32];
-//	sprintf(fname, "/tmp/%d.txt", aich);
-//	FILE *fp = fopen(fname, "w");
+	char fname[32];
+	sprintf(fname, "/tmp/%d.txt", aich);
+	FILE *fp = fopen(fname, "w");
 	D(printf("CH %d [%d] ", aich, numAiSamples));
 	for (i = 0; i < numAiSamples; i++) {
 		negative = (*(pChRaw + i) & (1 << 15)) != 0;
@@ -270,11 +208,11 @@ template <typename epicsType> int Bcm::convertAIArraysT(int aich)
 		}
 
 //		printf("%f ", (double)*pVal);
-//		fprintf(fp, "%f\n", (double)*pVal);
+        fprintf(fp, "%d\t\t%f\n", *(pChRaw + i), (double)*pVal);
 		pVal += SIS8300DRV_NUM_AI_CHANNELS;
 	}
 	D0(printf("\n"));
-//	fclose(fp);
+	fclose(fp);
 
     return 0;
 }
@@ -313,9 +251,12 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 
 	D(printf("CH %d [%d] BCM samples %d\n", aich, numAiSamples, numBCMSamples));
 
-//	char fname[32];
-//	sprintf(fname, "/tmp/bpm_X1_%d.txt", aich);
-//	FILE *fp = fopen(fname, "w");
+	char fname[32];
+	sprintf(fname, "/tmp/bcm_0_%d.txt", aich);
+    FILE *fp;
+    if (aich == 0) {
+    	fp = fopen(fname, "w");
+    }
 	while (i < numAiSamples) {
 		/* since will always take less IQ samples from raw data than available
 		 * we need to bail out when desired amount was collected */
@@ -338,17 +279,20 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 					*(pVal + k) = (epicsType)((double)(*(pChRaw + k)) * convFactor + convOffset);
 				}
 			}
+            if (aich == 0) {
+                fprintf(fp, "%f\n", (double)*(pVal));
+            }
 		} else if (aich == 1) {
 			getDoubleParam(aich, mSISConvFactor, &convFactor);
 			getDoubleParam(aich, mSISConvOffset, &convOffset);
 
 			/* BCM 9 .. 10 data is here */
 			for (k = 0; k < 2; k++) {
-				negative = (*(pChRaw + k) & (1 << 15)) != 0;
+				negative = (*(pChRaw + k + 8) & (1 << 15)) != 0;
 				if (negative) {
-					*(pVal + k) = (epicsType)((double)(*(pChRaw + k) | ~((1 << 16) - 1)) * convFactor + convOffset);
+					*(pVal + k + 8) = (epicsType)((double)(*(pChRaw + k) | ~((1 << 16) - 1)) * convFactor + convOffset);
 				} else {
-					*(pVal + k) = (epicsType)((double)(*(pChRaw + k)) * convFactor + convOffset);
+					*(pVal + k + 8) = (epicsType)((double)(*(pChRaw + k)) * convFactor + convOffset);
 				}
 			}
 		} else {
@@ -365,7 +309,9 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 		/* adjust BCM data pointer */
 		pVal += BCM_NUM_CHANNELS;
 		}
-//		fclose(fp);
+	    if (aich == 0) {
+    		fclose(fp);
+    	}
 
     return 0;
 }
@@ -420,15 +366,17 @@ template <typename epicsType> int Bcm::convertArraysT()
             continue;
         }
 
-		if (aich > 2) {
-			/* AI data is here */
-			ret = convertAIArraysT<epicsType>(aich);
-		} else {
-			/* BCM data is here */
-			ret = convertBCMArraysT<epicsType>(aich);
-		}
-		if (ret) {
-			return ret;
+		/* AI data is here */
+		ret = convertAIArraysT<epicsType>(aich);
+        if (ret) {
+            return ret;
+        }
+		if (aich < 2) {
+    		/* BCM data is here */
+    		ret = convertBCMArraysT<epicsType>(aich);
+    		if (ret) {
+    			return ret;
+    		}
 		}
     }
 

@@ -225,6 +225,7 @@ protected:
     template <typename epicsType> int convertArraysT();
     template <typename epicsType> int convertAIArraysT(int aich);
     template <typename epicsType> int convertBCMArraysT(int aich);
+    virtual int initDevice();
     virtual int acquireArrays();
     virtual int deviceDone();
     virtual int updateParameters();

@@ -168,6 +168,8 @@ dbpf $(PREFIX)ClockSource 2
 dbpf $(PREFIX)ClockDiv 1
 # external trigger
 dbpf $(PREFIX)TrigSource 1
+# backplane 0
+dbpf $(PREFIX)TrigLine 4
 # SIS8900 RTM
 dbpf $(PREFIX)RTMType 1
 #dbpf $(PREFIX)RTMTempGet 1
@@ -227,7 +229,7 @@ dbpf $(PREFIX)TS0:TSAcquireMode 1
 dbpf $(PREFIX)TS0:TSAcquire 1
 dbpf $(PREFIX)TS0:TSAveragingTime 0
 # Setup TimeSeries plugin for BCM (8 times smaller than AI)
-dbpf $(PREFIX)TS0:TSNumPoints 37500
-dbpf $(PREFIX)TS0:TSAcquireMode 1
-dbpf $(PREFIX)TS0:TSAcquire 1
-dbpf $(PREFIX)TS0:TSAveragingTime 0
+dbpf $(PREFIX)TS1:TSNumPoints 37500
+dbpf $(PREFIX)TS1:TSAcquireMode 1
+dbpf $(PREFIX)TS1:TSAcquire 1
+dbpf $(PREFIX)TS1:TSAveragingTime 0
