@@ -5,30 +5,11 @@
 # January 22, 2017
 
 ## Register '0x400' is RO (BCM_INT_GATEWARE_VERSION)
-record(longin, "$(P)$(R)FWVersion_RBV")
+record(longin, "$(P)$(R)BCMFWVersion_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_FW_VERSION")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FWVersionFanout NMS PP")
-}
-record(fanout, "$(P)$(R)FWVersionFanout") {
-    field(LNK1, "$(P)$(R)FWVersionDeviceID_RBV")
-    field(LNK2, "$(P)$(R)FWVersionMajor_RBV")
-    field(LNK3, "$(P)$(R)FWVersionMinor_RBV")
-    field(SELM, "All")
-}
-record(longin, "$(P)$(R)FWVersionDeviceID_RBV") {
-    field(DTYP, "asynUInt32Digital")
-    field(INP,  "@asynMask($(PORT),$(ADDR),0xFFFF0000,$(TIMEOUT))BCM_FW_VERSION")
-}
-record(longin, "$(P)$(R)FWVersionMajor_RBV") {
-    field(DTYP, "asynUInt32Digital")
-    field(INP,  "@asynMask($(PORT),$(ADDR),0x0000FF00,$(TIMEOUT))BCM_FW_VERSION")
-}
-record(longin, "$(P)$(R)FWVersionMinor_RBV") {
-    field(DTYP, "asynUInt32Digital")
-    field(INP,  "@asynMask($(PORT),$(ADDR),0x000000FF,$(TIMEOUT))BCM_FW_VERSION")
 }
 
 ## Register '0x401' is RO (BCM_INT_SOFTWARE_VERSION)
