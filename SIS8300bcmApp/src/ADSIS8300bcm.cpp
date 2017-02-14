@@ -84,14 +84,42 @@ ADSIS8300bcm::ADSIS8300bcm(const char *portName, const char *devicePath,
 }
 
 ADSIS8300bcm::~ADSIS8300bcm() {
-	D(printf("Shutdown and freeing up memory...\n"));
-
-	this->lock();
-	D(printf("Data thread is already down!\n"));
-	destroyDevice();
-
-	this->unlock();
 	I(printf("Shutdown complete!\n"));
+}
+
+int ADSIS8300bcm::deviceDone()
+{
+	unsigned int i;
+	int reg;
+	unsigned int val;
+    const char *name;
+    asynStatus status;
+	int ret = 0;
+
+	D(printf("Enter\n"));
+
+	for (i = 0; i < mRegisterIndex; i++) {
+	    getParamName(mRegisters[i], &name);
+		ret = sscanf(name, "%*s %X", &reg);
+		if (ret == 1) {
+			/* This is our BCM register access */
+			ret = SIS8300DRV_CALL("sis8300drv_reg_read", sis8300drv_reg_read(mSisDevice, reg, &val));
+			if (ret) {
+				return -1;
+			} else {
+				D(printf("Setting '%s' %d (%d) = %d\n", name, mRegisters[i], 0, val));
+				status = setIntegerParam(mRegisters[i], val);
+				if (status) {
+					return -1;
+				}
+			}
+		}
+	}
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks(0);
+
+	return 0;
 }
 
 asynStatus ADSIS8300bcm::drvUserCreate(asynUser *pasynUser, const char *drvInfo,

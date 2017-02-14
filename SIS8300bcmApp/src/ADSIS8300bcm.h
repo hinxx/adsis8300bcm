@@ -40,6 +40,8 @@ public:
     virtual void report(FILE *fp, int details);
 
 protected:
+    virtual int deviceDone();
+
     /* System wide parameters */
     int mRegisters[ADSIS8300BCM_NREGISTERS];
 
