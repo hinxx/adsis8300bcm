@@ -253,7 +253,7 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 
 	char fname[32];
 	sprintf(fname, "/tmp/bcm_0_%d.txt", aich);
-    FILE *fp;
+    FILE *fp = NULL;
     if (aich == 0) {
     	fp = fopen(fname, "w");
     }
@@ -309,7 +309,7 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 		/* adjust BCM data pointer */
 		pVal += BCM_NUM_CHANNELS;
 		}
-	    if (aich == 0) {
+	    if ((aich == 0) && fp) {
     		fclose(fp);
     	}
 
