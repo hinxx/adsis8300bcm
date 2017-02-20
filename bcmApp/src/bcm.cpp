@@ -581,6 +581,7 @@ int Bcm::deviceDone()
 
 	D(printf("Enter\n"));
 
+	/* DSP needs to be idle before we can read the statuses and alarms. */
 	ret = isDSPBusy(&busy);
 	if (ret) {
 		return ret;
@@ -628,6 +629,7 @@ int Bcm::updateParameters()
 
 	D(printf("Enter\n"));
 
+	/* DSP needs to be idle before we can update the registers! */
 	ret = isDSPBusy(&busy);
 	if (ret) {
 		return ret;
@@ -685,6 +687,17 @@ int Bcm::updateParameters()
 	}
 
 	D(printf("ret = %d\n", ret));
+
+	/* Verification that the register updates were accepted by the firmware.
+	 * If DSP became busy it means we are too slow in software! */
+	ret = isDSPBusy(&busy);
+	if (ret) {
+		return ret;
+	}
+	if (busy) {
+		return -1;
+	}
+
 	return ret;
 }
 
