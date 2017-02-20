@@ -45,7 +45,6 @@ static const char *driverName = "Bcm";
  * 10 .. 19  BCM channels
  */
 #define BCM_ADDR_FIRST			10
-#define BCM_ADDR_COUNT			10
 
 /** Constructor for Bcm; most parameters are simply passed to SIS8300::SIS8300.
   * After calling the base class constructor this method creates a thread to compute the simulated detector data,
@@ -197,9 +196,9 @@ template <typename epicsType> int Bcm::convertAIArraysT(int aich)
 	getDoubleParam(aich, mSISConvFactor, &convFactor);
 	getDoubleParam(aich, mSISConvOffset, &convOffset);
 
-	char fname[32];
-	sprintf(fname, "/tmp/%d.txt", aich);
-	FILE *fp = fopen(fname, "w");
+//	char fname[32];
+//	sprintf(fname, "/tmp/%d.txt", aich);
+//	FILE *fp = fopen(fname, "w");
 	D(printf("CH %d [%d] ", aich, numAiSamples));
 	for (i = 0; i < numAiSamples; i++) {
 		negative = (*(pChRaw + i) & (1 << 15)) != 0;
@@ -210,11 +209,11 @@ template <typename epicsType> int Bcm::convertAIArraysT(int aich)
 		}
 
 //		printf("%f ", (double)*pVal);
-        fprintf(fp, "%d\t\t%f\n", *(pChRaw + i), (double)*pVal);
+//        fprintf(fp, "%d\t\t%f\n", *(pChRaw + i), (double)*pVal);
 		pVal += SIS8300DRV_NUM_AI_CHANNELS;
 	}
 	D0(printf("\n"));
-	fclose(fp);
+//	fclose(fp);
 
     return 0;
 }
@@ -253,12 +252,12 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 
 	D(printf("CH %d [%d] BCM samples %d\n", aich, numAiSamples, numBCMSamples));
 
-	char fname[32];
-	sprintf(fname, "/tmp/bcm_0_%d.txt", aich);
-    FILE *fp = NULL;
-    if (aich == 0) {
-    	fp = fopen(fname, "w");
-    }
+//	char fname[32];
+//	sprintf(fname, "/tmp/bcm_0_%d.txt", aich);
+//    FILE *fp = NULL;
+//    if (aich == 0) {
+//    	fp = fopen(fname, "w");
+//    }
 	while (i < numAiSamples) {
 		/* since will always take less IQ samples from raw data than available
 		 * we need to bail out when desired amount was collected */
@@ -281,9 +280,9 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 					*(pVal + k) = (epicsType)((double)(*(pChRaw + k)) * convFactor + convOffset);
 				}
 			}
-            if (aich == 0) {
-                fprintf(fp, "%f\n", (double)*(pVal));
-            }
+//            if (aich == 0) {
+//                fprintf(fp, "%f\n", (double)*(pVal));
+//            }
 		} else if (aich == 1) {
 			getDoubleParam(aich, mSISConvFactor, &convFactor);
 			getDoubleParam(aich, mSISConvOffset, &convOffset);
@@ -311,9 +310,9 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 		/* adjust BCM data pointer */
 		pVal += BCM_NUM_CHANNELS;
 		}
-	    if ((aich == 0) && fp) {
-    		fclose(fp);
-    	}
+//	    if ((aich == 0) && fp) {
+//    		fclose(fp);
+//    	}
 
     return 0;
 }
@@ -447,7 +446,7 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 		reg = reg + BCM_CH0_OFFSET + ((list - BCM_ADDR_FIRST) * 0x100);
 	}
 
-	D(printf("list %d, index %d, reg %d, mask %x, read? %d\n", list, index, reg, mask, readFirst));
+	D(printf("list %d, index %d, reg 0x%x, mask 0x%x, read? %d\n", list, index, reg, mask, readFirst));
 
 	status = isParamValueNew(index, &changed);
 	if (status) {
@@ -513,7 +512,7 @@ int Bcm::refreshRegisterParameter(int list, int index, int reg, int mask)
 		reg = reg + BCM_CH0_OFFSET + ((list - BCM_ADDR_FIRST) * 0x100);
 	}
 
-	D(printf("list %d, index %d, reg %d, mask %x\n", list, index, reg, mask));
+	D(printf("list %d, index %d, reg 0x%x, mask 0x%x\n", list, index, reg, mask));
 
 	/* read FPGA register and update the parameter */
 	ret = SIS8300DRV_CALL("sis8300drv_reg_read", sis8300drv_reg_read(mSisDevice, reg, &regValue));
@@ -601,7 +600,7 @@ int Bcm::deviceDone()
 	/* Do callbacks so higher layers see any changes */
     callParamCallbacks(0);
 
-	for (i = BCM_ADDR_FIRST; i < (BCM_ADDR_FIRST + BCM_ADDR_COUNT); i++) {
+	for (i = BCM_ADDR_FIRST; i < (BCM_ADDR_FIRST + BCM_NUM_CHANNELS); i++) {
 		ret |= refreshRegisterParameter(i, mBcmAdcOffsErrorAvg, BCM_ADC_OFFS_ERROR_AVG_REG, 0xFFFF);
 		ret |= refreshRegisterParameter(i, mBcmAdcOffsErrorInteg, BCM_ADC_OFFS_ERROR_INTEG_REG, 0xFFFFFF);
 		ret |= refreshRegisterParameter(i, mBcmTrigToPulse, BCM_TRIG_TO_PULSE_REG, 0x7FF);
@@ -661,7 +660,7 @@ int Bcm::updateParameters()
 
 	D(printf("ret = %d\n", ret));
 
-	for (i = BCM_ADDR_FIRST; i < (BCM_ADDR_FIRST + BCM_ADDR_COUNT); i++) {
+	for (i = BCM_ADDR_FIRST; i < (BCM_ADDR_FIRST + BCM_NUM_CHANNELS); i++) {
 		ret |= updateRegisterParameter(i, mBcmTrigFineDelay, BCM_TRIG_FINE_DELAY_REG, 0x7FF, 0);
 		ret |= updateRegisterParameter(i, mBcmAdcScale, BCM_ADC_SCALE_REG, 0xFFFF, 0);
 		ret |= updateRegisterParameter(i, mBcmUpperThreshold, BCM_UPPER_THRESHOLD_REG, 0xFFFF, 0);
