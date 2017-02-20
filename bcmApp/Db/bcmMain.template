@@ -18,7 +18,7 @@ record(bo, "$(P)$(R)MinTrigPeriodSrcSel")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MIN_TRIG_PERIOD_SRC_SEL")
     field(ZNAM, "FW register")
-    field(ONAM, "MRF tming")
+    field(ONAM, "MRF timing")
     info(autosaveFields, "VAL")
 }
 record(bi, "$(P)$(R)MinTrigPeriodSrcSel_RBV")
@@ -26,7 +26,7 @@ record(bi, "$(P)$(R)MinTrigPeriodSrcSel_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MIN_TRIG_PERIOD_SRC_SEL")
     field(ZNAM, "FW register")
-    field(ONAM, "MRF tming")
+    field(ONAM, "MRF timing")
     field(SCAN, "I/O Intr")
 }
 
@@ -36,7 +36,7 @@ record(bo, "$(P)$(R)MaxPulseWidthSrcSel")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAX_PULSE_WIDTH_SRC_SEL")
     field(ZNAM, "FW register")
-    field(ONAM, "MRF tming")
+    field(ONAM, "MRF timing")
     info(autosaveFields, "VAL")
 }
 record(bi, "$(P)$(R)MaxPulseWidthSrcSel_RBV")
@@ -44,7 +44,43 @@ record(bi, "$(P)$(R)MaxPulseWidthSrcSel_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAX_PULSE_WIDTH_SRC_SEL")
     field(ZNAM, "FW register")
-    field(ONAM, "MRF tming")
+    field(ONAM, "MRF timing")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x403' is RW (BCM_INT_TRIG_SOURCE_SELECT_REG)
+record(bo, "$(P)$(R)TrigSrcSel")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_SRC_SEL")
+    field(ZNAM, "Trigger logic")
+    field(ONAM, "FW register")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)TrigSrcSel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_SRC_SEL")
+    field(ZNAM, "Trigger logic")
+    field(ONAM, "FW register")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x404' is RW (BCM_INT_BUSY_IGNORE_REG)
+record(bo, "$(P)$(R)IgnoreBusy")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_IGNORE_BUSY")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)IgnoreBusy_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_IGNORE_BUSY")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
     field(SCAN, "I/O Intr")
 }
 
@@ -118,6 +154,25 @@ record(bi, "$(P)$(R)CalPulse_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_CAL_PULSE")
     field(ZNAM, "Disabled")
     field(ONAM, "Enabled")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x415' is RW (BCM_CTRL_BEAM_ABOVE_THRESHOLD)
+record(bo, "$(P)$(R)BeamOverThr")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_BEAM_OVER_THR")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)BeamOverThr_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_BEAM_OVER_THR")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
     field(SCAN, "I/O Intr")
 }
 

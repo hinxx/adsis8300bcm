@@ -84,6 +84,7 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 
     createParam(BcmAllAlarmsString,		asynParamInt32,	&mBcmAllAlarms);
     createParam(BcmAuxClkAlarmString,		asynParamInt32,	&mBcmAuxClkAlarm);
+    createParam(BcmBeamOverThrString,		asynParamInt32,	&mBcmBeamOverThr);
     createParam(BcmCalPulseString,		asynParamInt32,	&mBcmCalPulse);
     createParam(BcmClkFreqString,		asynParamInt32,	&mBcmClkFreq);
     createParam(BcmClkTrigAlarmsFirstString,		asynParamInt32,	&mBcmClkTrigAlarmsFirst);
@@ -91,6 +92,7 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmDiffWarnResetString,		asynParamInt32,	&mBcmDiffWarnReset);
     createParam(BcmFlatTopTimeString,		asynParamInt32,	&mBcmFlatTopTime);
     createParam(BcmFwVersionString,		asynParamInt32,	&mBcmFwVersion);
+    createParam(BcmIgnoreBusyString,		asynParamInt32,	&mBcmIgnoreBusy);
     createParam(BcmMainClkAlarmString,		asynParamInt32,	&mBcmMainClkAlarm);
     createParam(BcmMaxPulseWidthString,		asynParamInt32,	&mBcmMaxPulseWidth);
     createParam(BcmMaxPulseWidthSrcSelString,		asynParamInt32,	&mBcmMaxPulseWidthSrcSel);
@@ -100,6 +102,7 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmRfqTransparencyString,		asynParamInt32,	&mBcmRfqTransparency);
     createParam(BcmStatusString,		asynParamInt32,	&mBcmStatus);
     createParam(BcmTrigPeriodString,		asynParamInt32,	&mBcmTrigPeriod);
+    createParam(BcmTrigSrcSelString,		asynParamInt32,	&mBcmTrigSrcSel);
     createParam(BcmTrigTooFastAlarmString,		asynParamInt32,	&mBcmTrigTooFastAlarm);
     createParam(BcmTrigTooLongAlarmString,		asynParamInt32,	&mBcmTrigTooLongAlarm);
     createParam(BcmTrigTooShortAlarmString,		asynParamInt32,	&mBcmTrigTooShortAlarm);
@@ -574,8 +577,11 @@ int Bcm::updateParameters()
 
 	D(printf("Enter\n"));
 
+	ret |= updateRegisterParameter(mBcmBeamOverThr, BCM_BEAM_OVER_THR_REG, 0xFFFF, 0);
 	ret |= updateRegisterParameter(mBcmMinTrigPeriodSrcSel, BCM_MIN_TRIG_PERIOD_SRC_SEL_REG, 0x1, 1);
 	ret |= updateRegisterParameter(mBcmMaxPulseWidthSrcSel, BCM_MAX_PULSE_WIDTH_SRC_SEL_REG, 0x2, 1);
+	ret |= updateRegisterParameter(mBcmTrigSrcSel, BCM_TRIG_SRC_SEL_REG, 0x1, 1);
+	ret |= updateRegisterParameter(mBcmIgnoreBusy, BCM_IGNORE_BUSY_REG, 0x1, 1);
 	ret |= updateRegisterParameter(mBcmRfqTransparency, BCM_RFQ_TRANSPARENCY_REG, 0xFFFF, 0);
 	ret |= updateRegisterParameter(mBcmDiffWarnReset, BCM_DIFF_WARN_RESET_REG, 0x1, 0);
 	ret |= updateRegisterParameter(mBcmMinTrigPeriod, BCM_MIN_TRIG_PERIOD_REG, 0xFFFF, 0);

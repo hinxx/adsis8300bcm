@@ -23,6 +23,7 @@
 /* XXX: Sort these registers by address */
 #define BCM_ALL_ALARMS_REG			0x431
 #define BCM_AUX_CLK_ALARM_REG			0x432
+#define BCM_BEAM_OVER_THR_REG			0x415
 #define BCM_CAL_PULSE_REG			0x414
 #define BCM_CLK_FREQ_REG			0x421
 #define BCM_CLK_TRIG_ALARMS_FIRST_REG			0x434
@@ -30,6 +31,7 @@
 #define BCM_DIFF_WARN_RESET_REG			0x411
 #define BCM_FLAT_TOP_TIME_REG			0x424
 #define BCM_FW_VERSION_REG			0x400
+#define BCM_IGNORE_BUSY_REG			0x404
 #define BCM_MAIN_CLK_ALARM_REG			0x432
 #define BCM_MAX_PULSE_WIDTH_REG			0x413
 #define BCM_MAX_PULSE_WIDTH_SRC_SEL_REG			0x402
@@ -40,6 +42,7 @@
 #define BCM_STATUS_REG			0x420
 #define BCM_SW_VERSION_REG			0x401
 #define BCM_TRIG_PERIOD_REG			0x422
+#define BCM_TRIG_SRC_SEL_REG			0x403
 #define BCM_TRIG_TOO_FAST_ALARM_REG			0x432
 #define BCM_TRIG_TOO_LONG_ALARM_REG			0x432
 #define BCM_TRIG_TOO_SHORT_ALARM_REG			0x432
@@ -96,6 +99,7 @@
 
 #define BcmAllAlarmsString			"BCM_ALL_ALARMS"
 #define BcmAuxClkAlarmString			"BCM_AUX_CLK_ALARM"
+#define BcmBeamOverThrString			"BCM_BEAM_OVER_THR"
 #define BcmCalPulseString			"BCM_CAL_PULSE"
 #define BcmClkFreqString			"BCM_CLK_FREQ"
 #define BcmClkTrigAlarmsFirstString			"BCM_CLK_TRIG_ALARMS_FIRST"
@@ -103,6 +107,7 @@
 #define BcmDiffWarnResetString			"BCM_DIFF_WARN_RESET"
 #define BcmFlatTopTimeString			"BCM_FLAT_TOP_TIME"
 #define BcmFwVersionString			"BCM_FW_VERSION"
+#define BcmIgnoreBusyString			"BCM_IGNORE_BUSY"
 #define BcmMainClkAlarmString			"BCM_MAIN_CLK_ALARM"
 #define BcmMaxPulseWidthString			"BCM_MAX_PULSE_WIDTH"
 #define BcmMaxPulseWidthSrcSelString			"BCM_MAX_PULSE_WIDTH_SRC_SEL"
@@ -112,6 +117,7 @@
 #define BcmRfqTransparencyString			"BCM_RFQ_TRANSPARENCY"
 #define BcmStatusString			"BCM_STATUS"
 #define BcmTrigPeriodString			"BCM_TRIG_PERIOD"
+#define BcmTrigSrcSelString			"BCM_TRIG_SRC_SEL"
 #define BcmTrigTooFastAlarmString			"BCM_TRIG_TOO_FAST_ALARM"
 #define BcmTrigTooLongAlarmString			"BCM_TRIG_TOO_LONG_ALARM"
 #define BcmTrigTooShortAlarmString			"BCM_TRIG_TOO_SHORT_ALARM"
@@ -165,6 +171,7 @@ protected:
 	int mBcmAllAlarms;
 	#define BCM_FIRST_PARAM mBcmAllAlarms
 	int mBcmAuxClkAlarm;
+	int mBcmBeamOverThr;
 	int mBcmCalPulse;
 	int mBcmClkFreq;
 	int mBcmClkTrigAlarmsFirst;
@@ -172,6 +179,7 @@ protected:
 	int mBcmDiffWarnReset;
 	int mBcmFlatTopTime;
 	int mBcmFwVersion;
+	int mBcmIgnoreBusy;
 	int mBcmMainClkAlarm;
 	int mBcmMaxPulseWidth;
 	int mBcmMaxPulseWidthSrcSel;
@@ -181,6 +189,7 @@ protected:
 	int mBcmRfqTransparency;
 	int mBcmStatus;
 	int mBcmTrigPeriod;
+	int mBcmTrigSrcSel;
 	int mBcmTrigTooFastAlarm;
 	int mBcmTrigTooLongAlarm;
 	int mBcmTrigTooShortAlarm;
