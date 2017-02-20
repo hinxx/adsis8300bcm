@@ -434,7 +434,7 @@ int Bcm::updateRegisterParameter(int index, int reg, int mask, int readFirst)
 
 int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int readFirst)
 {
-	int changed;
+	bool changed;
 	asynStatus status;
 	int value;
 	unsigned int regValue;
@@ -447,7 +447,7 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 
 	D(printf("list %d, index %d, reg %d, mask %x, read? %d\n", list, index, reg, mask, readFirst));
 
-	status = hasParamValueChanged(index, &changed);
+	status = isParamValueNew(index, &changed);
 	if (status) {
 		return -1;
 	}
@@ -485,7 +485,7 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 	}
 
 	/* clear the value has changed flag */
-	status = clearParamValueChanged(index);
+	status = clearParamValueNew(index);
 	if (status) {
 		return -1;
 	}
