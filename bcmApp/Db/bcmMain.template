@@ -158,21 +158,17 @@ record(bi, "$(P)$(R)CalPulse_RBV")
 }
 
 ## Register '0x415' is RW (BCM_CTRL_BEAM_ABOVE_THRESHOLD)
-record(bo, "$(P)$(R)BeamOverThr")
+record(longout, "$(P)$(R)BeamOverThr")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_BEAM_OVER_THR")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)BeamOverThr_RBV")
+record(longin, "$(P)$(R)BeamOverThr_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_BEAM_OVER_THR")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
     field(SCAN, "I/O Intr")
 }
 
