@@ -12,14 +12,6 @@ record(longin, "$(P)$(R)BCMFWVersion_RBV")
     field(SCAN, "I/O Intr")
 }
 
-## Register '0x401' is RO (BCM_INT_SOFTWARE_VERSION)
-record(longin, "$(P)$(R)SWVersion_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_SW_VERSION")
-    field(SCAN, "I/O Intr")
-}
-
 ## Register '0x402' is RW (BCM_INT_MIN_TRIG_PERIOD_SRC_SEL)
 record(bo, "$(P)$(R)MinTrigPeriodSrcSel")
 {

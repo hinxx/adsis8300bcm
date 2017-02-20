@@ -111,7 +111,6 @@
 #define BcmResetAlarmsString			"BCM_RESET_ALARMS"
 #define BcmRfqTransparencyString			"BCM_RFQ_TRANSPARENCY"
 #define BcmStatusString			"BCM_STATUS"
-#define BcmSwVersionString			"BCM_SW_VERSION"
 #define BcmTrigPeriodString			"BCM_TRIG_PERIOD"
 #define BcmTrigTooFastAlarmString			"BCM_TRIG_TOO_FAST_ALARM"
 #define BcmTrigTooLongAlarmString			"BCM_TRIG_TOO_LONG_ALARM"
@@ -181,7 +180,6 @@ protected:
 	int mBcmResetAlarms;
 	int mBcmRfqTransparency;
 	int mBcmStatus;
-	int mBcmSwVersion;
 	int mBcmTrigPeriod;
 	int mBcmTrigTooFastAlarm;
 	int mBcmTrigTooLongAlarm;

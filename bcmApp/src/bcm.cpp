@@ -99,7 +99,6 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmResetAlarmsString,		asynParamInt32,	&mBcmResetAlarms);
     createParam(BcmRfqTransparencyString,		asynParamInt32,	&mBcmRfqTransparency);
     createParam(BcmStatusString,		asynParamInt32,	&mBcmStatus);
-    createParam(BcmSwVersionString,		asynParamInt32,	&mBcmSwVersion);
     createParam(BcmTrigPeriodString,		asynParamInt32,	&mBcmTrigPeriod);
     createParam(BcmTrigTooFastAlarmString,		asynParamInt32,	&mBcmTrigTooFastAlarm);
     createParam(BcmTrigTooLongAlarmString,		asynParamInt32,	&mBcmTrigTooLongAlarm);
