@@ -242,6 +242,7 @@ private:
     int updateRegisterParameter(int list, int index, int reg, int mask, int readFirst);
     int refreshRegisterParameter(int index, int reg, int mask);
     int refreshRegisterParameter(int list, int index, int reg, int mask);
+    int isDSPBusy(int *busy);
 };
 
 #define BCM_NUM_PARAMS ((int)(&BCM_LAST_PARAM - &BCM_FIRST_PARAM + 1))

@@ -532,14 +532,64 @@ int Bcm::refreshRegisterParameter(int list, int index, int reg, int mask)
 	return 0;
 }
 
-int Bcm::deviceDone()
+int Bcm::isDSPBusy(int *busy)
 {
 	int i;
 	int ret = 0;
 
 	D(printf("Enter\n"));
 
-	ret |= refreshRegisterParameter(mBcmStatus, BCM_STATUS_REG, 0x3F);
+	*busy = 1;
+
+	/* DSP core is busy for 6.5ms after pulse done. During this time it is not
+	 * desired to access registers */
+	i = 10;
+	while (i--) {
+		ret = refreshRegisterParameter(mBcmStatus, BCM_STATUS_REG, 0x3FF);
+		if (ret) {
+			return ret;
+		}
+		/* register 0x420 bit 8 will be cleared when DSP is not busy */
+		ret = mBcmStatus & 0x100;
+		if (! ret) {
+			break;
+		}
+		usleep(1000);
+		D(printf("DSP still busy %d..\n", i));
+	}
+	ret = refreshRegisterParameter(mBcmStatus, BCM_STATUS_REG, 0x3FF);
+	if (ret) {
+		return ret;
+	}
+	ret = mBcmStatus & 0x100;
+	if (ret) {
+		E(printf("DSP still busy after 10 ms!!!\n"));
+		return -1;
+	}
+
+	D(printf("DSP not busy anymore\n"));
+	*busy = 0;
+
+	return 0;
+}
+
+int Bcm::deviceDone()
+{
+	int i;
+	int busy;
+	int ret = 0;
+
+	D(printf("Enter\n"));
+
+	ret = isDSPBusy(&busy);
+	if (ret) {
+		return ret;
+	}
+	if (busy) {
+		return -1;
+	}
+
+	ret |= refreshRegisterParameter(mBcmStatus, BCM_STATUS_REG, 0x3FF);
 	ret |= refreshRegisterParameter(mBcmClkFreq, BCM_CLK_FREQ_REG, 0xFFFFF);
 	ret |= refreshRegisterParameter(mBcmTrigPeriod, BCM_TRIG_PERIOD_REG, 0xFFFFFFFF);
 	ret |= refreshRegisterParameter(mBcmTrigWidth, BCM_TRIG_WIDTH_REG, 0xFFFFF);
@@ -573,9 +623,18 @@ int Bcm::deviceDone()
 int Bcm::updateParameters()
 {
 	int i;
+	int busy;
 	int ret = 0;
 
 	D(printf("Enter\n"));
+
+	ret = isDSPBusy(&busy);
+	if (ret) {
+		return ret;
+	}
+	if (busy) {
+		return -1;
+	}
 
 	ret |= updateRegisterParameter(mBcmBeamOverThr, BCM_BEAM_OVER_THR_REG, 0xFFFF, 0);
 	ret |= updateRegisterParameter(mBcmMinTrigPeriodSrcSel, BCM_MIN_TRIG_PERIOD_SRC_SEL_REG, 0x1, 1);
