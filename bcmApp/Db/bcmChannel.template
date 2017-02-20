@@ -410,15 +410,15 @@ record(longin, "$(P)$(R)CalPulseAmplLate_RBV")
 ## Register '0xn19' is RO (BCM_ADC_MPS_ALARM_HOLD)
 record(longin, "$(P)$(R)ADCAlarmsLatched_RBV")
 {
-    field(DTYP, "asynUInt32Digital")
-    field(INP,  "@asynMask($(PORT),$(ADDR),0xFF,$(TIMEOUT))BCM_ADC_ALARMS_LATCHED")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_ADC_ALARMS_LATCHED")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn1A' is RO (BCM_ADC_MPS_ALARM_FIRST)
 record(longin, "$(P)$(R)ADCAlarmsFirst_RBV")
 {
-    field(DTYP, "asynUInt32Digital")
-    field(INP,  "@asynMask($(PORT),$(ADDR),0xFF,$(TIMEOUT))BCM_ADC_ALARMS_FIRST")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_ADC_ALARMS_FIRST")
     field(SCAN, "I/O Intr")
 }

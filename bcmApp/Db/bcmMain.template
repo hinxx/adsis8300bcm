@@ -132,8 +132,8 @@ record(bi, "$(P)$(R)CalPulse_RBV")
 ## Register '0x420' is RO (BCM_STATUS)
 record(longin, "$(P)$(R)CoreStatus_RBV")
 {
-    field(DTYP, "asynUInt32Digital")
-    field(INP,  "@asynMask($(PORT),$(ADDR),0x3F,$(TIMEOUT))BCM_STATUS")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_STATUS")
     field(SCAN, "I/O Intr")
 }
 
@@ -292,15 +292,15 @@ record(bi, "$(P)$(R)TrigTooFastAlarm_RBV") {
 ## Register '0x433' is RO (BCM_CLK_TRIG_MPS_ALARM_HOLD)
 record(longin, "$(P)$(R)ClkTrigAlarmsLatched_RBV")
 {
-    field(DTYP, "asynUInt32Digital")
-    field(INP,  "@asynMask($(PORT),$(ADDR),0x1F,$(TIMEOUT))BCM_CLK_TRIG_ALARMS_LATCHED")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_CLK_TRIG_ALARMS_LATCHED")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0x434' is RO (BCM_CLK_TRIG_MPS_ALARM_FIRST)
 record(longin, "$(P)$(R)ClkTrigAlarmsFirst_RBV")
 {
-    field(DTYP, "asynUInt32Digital")
-    field(INP,  "@asynMask($(PORT),$(ADDR),0x1F,$(TIMEOUT))BCM_CLK_TRIG_ALARMS_FIRST")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_CLK_TRIG_ALARMS_FIRST")
     field(SCAN, "I/O Intr")
 }
