@@ -139,7 +139,7 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmUpperThresholdString,		asynParamInt32,	&mBcmUpperThreshold);
     createParam(BcmUpperThresholdAlarmString,		asynParamInt32,	&mBcmUpperThresholdAlarm);
 
-    createParam(BcmProbeSourceSelectString,		asynParamInt32,	&mBcmProbeSourceSelect);
+    createParam(BcmProbeSrcSelString,		asynParamInt32,	&mBcmProbeSrcSel);
 
     this->lock();
     initDevice();
@@ -687,6 +687,13 @@ int Bcm::updateParameters()
 	}
 
 	D(printf("ret = %d\n", ret));
+
+	for (i = 0; i < BCM_NUM_PROBES; i++) {
+		ret |= updateRegisterParameter(i, mBcmProbeSrcSel, BCM_PROBE_SOURCE_SELECT_REG, 0x3F, 0);
+
+	    /* Do callbacks so higher layers see any changes */
+	    callParamCallbacks(i);
+	}
 
 	/* Verification that the register updates were accepted by the firmware.
 	 * If DSP became busy it means we are too slow in software! */

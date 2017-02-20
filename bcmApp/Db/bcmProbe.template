@@ -15,12 +15,12 @@ record(longout, "$(P)$(R)ProbeSrcSel")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PROBE_SOURCE_SELECT")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PROBE_SRC_SEL")
     info(autosaveFields, "VAL")
 }
 record(longin, "$(P)$(R)ProbeSrcSel_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PROBE_SOURCE_SELECT")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PROBE_SRC_SEL")
     field(SCAN, "I/O Intr")
 }

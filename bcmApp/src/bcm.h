@@ -17,6 +17,7 @@
 #include <sis8300drv.h>
 
 #define BCM_NUM_CHANNELS      10
+#define BCM_NUM_PROBES        4
 
 #define BCM_IRQ_WAIT_TIME     0
 
@@ -154,7 +155,7 @@
 #define BcmUpperThresholdString			"BCM_UPPER_THRESHOLD"
 #define BcmUpperThresholdAlarmString			"BCM_UPPER_THRESHOLD_ALARM"
 
-#define BcmProbeSourceSelectString			"BCM_PROBE_SOURCE_SELECT"
+#define BcmProbeSrcSelString			"BCM_PROBE_SRC_SEL"
 
 class epicsShareClass Bcm : public SIS8300 {
 public:
@@ -226,8 +227,8 @@ protected:
 	int mBcmUpperThreshold;
 	int mBcmUpperThresholdAlarm;
 
-	int mBcmProbeSourceSelect;
-	#define BCM_LAST_PARAM mBcmProbeSourceSelect
+	int mBcmProbeSrcSel;
+	#define BCM_LAST_PARAM mBcmProbeSrcSel
 
     template <typename epicsType> int convertArraysT();
     template <typename epicsType> int convertAIArraysT(int aich);
