@@ -40,7 +40,7 @@ Where the scale factor (i.e 0x6400) come from:
   the scale factor 0x6400 will translate 32768 ADC units to 25600 units at the shape output as desired.
 
 
-[Hooman     I did some tests and it turned out that the ADC output reaches its max with an input
+[Hooman]    I did some tests and it turned out that the ADC output reaches its max with an input
             voltage of ~1.1 V. So, in order to get the current value in mA, do we need to slightly
             change the division factor (i.e. 256)? Or should we expect this to be done automatically
             through calibration?
