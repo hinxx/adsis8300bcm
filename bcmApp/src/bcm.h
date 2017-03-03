@@ -237,6 +237,7 @@ protected:
     virtual int acquireArrays();
     virtual int deviceDone();
     virtual int updateParameters();
+    virtual int refreshParameters();
 
 private:
     int updateRegisterParameter(int index, int reg, int mask, int readFirst);

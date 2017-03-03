@@ -581,7 +581,7 @@ int Bcm::isDSPBusy(int *busy)
 		return -1;
 	}
 	if (value & 0x100) {
-		E(printf("DSP still busy after 10 ms!!!\n"));
+		SIS8300_ERR("DSP busy!");
 		return -1;
 	}
 
@@ -592,6 +592,13 @@ int Bcm::isDSPBusy(int *busy)
 }
 
 int Bcm::deviceDone()
+{
+	D(printf("Enter\n"));
+
+	return 0;
+}
+
+int Bcm::refreshParameters()
 {
 	int i;
 	int busy;
