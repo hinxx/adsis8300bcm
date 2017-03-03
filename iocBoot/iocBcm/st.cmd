@@ -64,7 +64,7 @@ epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES", "30000000")
 # BcmConfig(const char *portName, const char *devicePath,
 #            int maxAddr, int numSamples, NDDataType_t dataType,
 #            int maxBuffers, size_t maxMemory, int priority, int stackSize)
-BcmConfig("$(PORT)", "/dev/sis8300-2", $(NUM_CH), $(NUM_SAMPLES), 7, 0, 0)
+BcmConfig("$(PORT)", "/dev/sis8300-11", $(NUM_CH), $(NUM_SAMPLES), 7, 0, 0)
 dbLoadRecords("$(SIS8300)/db/SIS8300.template",        "P=$(PREFIX),R=,           PORT=$(PORT),ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(SIS8300)/db/SIS8300N.template",       "P=$(PREFIX),R=$(AICH0):,  PORT=$(PORT),ADDR=0,TIMEOUT=1,NAME=$(AICH0)")
 dbLoadRecords("$(SIS8300)/db/SIS8300N.template",       "P=$(PREFIX),R=$(AICH1):,  PORT=$(PORT),ADDR=1,TIMEOUT=1,NAME=$(AICH1)")
@@ -92,9 +92,9 @@ dbLoadRecords("$(BCM)/db/bcmChannel.template", "P=$(PREFIX),R=$(BCM8):,   PORT=$
 dbLoadRecords("$(BCM)/db/bcmChannel.template", "P=$(PREFIX),R=$(BCM9):,   PORT=$(PORT),ADDR=19,TIMEOUT=1,NAME=$(BCM9)")
 # BCM probe related records
 dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE0):, PORT=$(PORT),ADDR=0,TIMEOUT=1,NAME=$(PROBE0)")
-dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE1):, PORT=$(PORT),ADDR=0,TIMEOUT=1,NAME=$(PROBE1)")
-dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE2):, PORT=$(PORT),ADDR=0,TIMEOUT=1,NAME=$(PROBE2)")
-dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE3):, PORT=$(PORT),ADDR=0,TIMEOUT=1,NAME=$(PROBE3)")
+dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE1):, PORT=$(PORT),ADDR=1,TIMEOUT=1,NAME=$(PROBE1)")
+dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE2):, PORT=$(PORT),ADDR=2,TIMEOUT=1,NAME=$(PROBE2)")
+dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE3):, PORT=$(PORT),ADDR=3,TIMEOUT=1,NAME=$(PROBE3)")
 
 # Create a standard arrays plugin, set it to get data from Bcm driver.
 NDStdArraysConfigure("Image1", 3, 0, "$(PORT)", 0)
@@ -135,7 +135,7 @@ dbLoadRecords("$(ADCORE)/db/NDTimeSeriesN.template", "P=$(PREFIX),R=TS1:9:, PORT
 epicsEnvSet("SYS"               "EVR")
 epicsEnvSet("DEVICE"            "MTCA")
 epicsEnvSet("EVR_PCIDOMAIN"     "0x0")
-epicsEnvSet("EVR_PCIBUS"        "0x7")
+epicsEnvSet("EVR_PCIBUS"        "0x8")
 epicsEnvSet("EVR_PCIDEVICE"     "0x0")
 epicsEnvSet("EVR_PCIFUNCTION"   "0x0")
 
