@@ -200,17 +200,27 @@ template <typename epicsType> int Bcm::convertAIArraysT(int aich)
 //	sprintf(fname, "/tmp/%d.txt", aich);
 //	FILE *fp = fopen(fname, "w");
 	D(printf("CH %d [%d] ", aich, numAiSamples));
-	for (i = 0; i < numAiSamples; i++) {
-		negative = (*(pChRaw + i) & (1 << 15)) != 0;
-		if (negative) {
-			*pVal = (epicsType)((double)(*(pChRaw + i) | ~((1 << 16) - 1)) * convFactor + convOffset);
-		} else {
-			*pVal = (epicsType)((double)(*(pChRaw + i)) * convFactor + convOffset);
-		}
+	if (aich < 8) {
+		for (i = 0; i < numAiSamples; i++) {
+			negative = (*(pChRaw + i) & (1 << 15)) != 0;
+			if (negative) {
+				*pVal = (epicsType)((double)(*(pChRaw + i) | ~((1 << 16) - 1)) * convFactor + convOffset);
+			} else {
+				*pVal = (epicsType)((double)(*(pChRaw + i)) * convFactor + convOffset);
+			}
 
-//		printf("%f ", (double)*pVal);
-//        fprintf(fp, "%d\t\t%f\n", *(pChRaw + i), (double)*pVal);
-		pVal += SIS8300DRV_NUM_AI_CHANNELS;
+//			printf("%f ", (double)*pVal);
+//	        fprintf(fp, "%d\t\t%f\n", *(pChRaw + i), (double)*pVal);
+			pVal += SIS8300DRV_NUM_AI_CHANNELS;
+		}
+	} else {
+		for (i = 0; i < numAiSamples; i++) {
+			*pVal = (epicsType)((double)(*(pChRaw + i)) * convFactor + convOffset);
+
+//			printf("%f ", (double)*pVal);
+//	        fprintf(fp, "%d\t\t%f\n", *(pChRaw + i), (double)*pVal);
+			pVal += SIS8300DRV_NUM_AI_CHANNELS;
+		}
 	}
 	D0(printf("\n"));
 //	fclose(fp);
@@ -309,7 +319,7 @@ template <typename epicsType> int Bcm::convertBCMArraysT(int aich)
 		j++;
 		/* adjust BCM data pointer */
 		pVal += BCM_NUM_CHANNELS;
-		}
+	}
 //	    if ((aich == 0) && fp) {
 //    		fclose(fp);
 //    	}
