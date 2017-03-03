@@ -91,10 +91,10 @@ dbLoadRecords("$(BCM)/db/bcmChannel.template", "P=$(PREFIX),R=$(BCM7):,   PORT=$
 dbLoadRecords("$(BCM)/db/bcmChannel.template", "P=$(PREFIX),R=$(BCM8):,   PORT=$(PORT),ADDR=18,TIMEOUT=1,NAME=$(BCM8)")
 dbLoadRecords("$(BCM)/db/bcmChannel.template", "P=$(PREFIX),R=$(BCM9):,   PORT=$(PORT),ADDR=19,TIMEOUT=1,NAME=$(BCM9)")
 # BCM probe related records
-dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE0):, PORT=$(PORT),ADDR=0,TIMEOUT=1,NAME=$(PROBE0)")
-dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE1):, PORT=$(PORT),ADDR=1,TIMEOUT=1,NAME=$(PROBE1)")
-dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE2):, PORT=$(PORT),ADDR=2,TIMEOUT=1,NAME=$(PROBE2)")
-dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE3):, PORT=$(PORT),ADDR=3,TIMEOUT=1,NAME=$(PROBE3)")
+dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE0):, PORT=$(PORT),ADDR=10,TIMEOUT=1,NAME=$(PROBE0)")
+dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE1):, PORT=$(PORT),ADDR=11,TIMEOUT=1,NAME=$(PROBE1)")
+dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE2):, PORT=$(PORT),ADDR=12,TIMEOUT=1,NAME=$(PROBE2)")
+dbLoadRecords("$(BCM)/db/bcmProbe.template",   "P=$(PREFIX),R=$(PROBE3):, PORT=$(PORT),ADDR=13,TIMEOUT=1,NAME=$(PROBE3)")
 
 # Create a standard arrays plugin, set it to get data from Bcm driver.
 NDStdArraysConfigure("Image1", 3, 0, "$(PORT)", 0)

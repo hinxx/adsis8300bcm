@@ -456,9 +456,7 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 		reg = reg + BCM_CH0_OFFSET + ((list - BCM_ADDR_FIRST) * 0x100);
 	}
 
-	D(printf("list %d, index %d, reg 0x%x, mask 0x%x, read? %d\n", list, index, reg, mask, readFirst));
-
-	status = isParamValueNew(index, &changed);
+	status = isParamValueNew(list, index, &changed);
 	if (status) {
 		return -1;
 	}
@@ -469,10 +467,13 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 	}
 
 	/* value has changed, update the FPGA register */
-	status = getIntegerParam(index, &value);
+	status = getIntegerParam(list, index, &value);
 	if (status) {
 		return -1;
 	}
+
+	D(printf("list %d, index %d, reg 0x%x, mask 0x%x, value %d (0x%x), read? %d\n", list, index, reg, mask, value, value, readFirst));
+
 	regValue = 0;
 	if (readFirst) {
 		ret = SIS8300DRV_CALL("sis8300drv_reg_read", sis8300drv_reg_read(mSisDevice, reg, &regValue));
@@ -496,7 +497,7 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 	}
 
 	/* clear the value has changed flag */
-	status = clearParamValueNew(index);
+	status = clearParamValueNew(list, index);
 	if (status) {
 		return -1;
 	}
@@ -530,7 +531,7 @@ int Bcm::refreshRegisterParameter(int list, int index, int reg, int mask)
 		return -1;
 	}
 	value = regValue;
-    getParamName(index, &name);
+    getParamName(list, index, &name);
 	D(printf("Setting '%s' %d (%d) = %d\n", name, index, list, value));
 
 	status = setIntegerParam(list, index, value);
@@ -697,7 +698,7 @@ int Bcm::updateParameters()
 
 	D(printf("ret = %d\n", ret));
 
-	for (i = 0; i < BCM_NUM_PROBES; i++) {
+	for (i = BCM_ADDR_FIRST; i < (BCM_ADDR_FIRST + BCM_NUM_PROBES); i++) {
 		ret |= updateRegisterParameter(i, mBcmProbeSrcSel, BCM_PROBE_SOURCE_SELECT_REG, 0x3F, 0);
 
 	    /* Do callbacks so higher layers see any changes */
