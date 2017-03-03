@@ -546,6 +546,8 @@ int Bcm::isDSPBusy(int *busy)
 {
 	int i;
 	int ret = 0;
+	int value;
+	asynStatus status;
 
 	D(printf("Enter\n"));
 
@@ -559,9 +561,12 @@ int Bcm::isDSPBusy(int *busy)
 		if (ret) {
 			return ret;
 		}
+		status = getIntegerParam(mBcmStatus, &value);
+		if (status) {
+			return -1;
+		}
 		/* register 0x420 bit 8 will be cleared when DSP is not busy */
-		ret = mBcmStatus & 0x100;
-		if (! ret) {
+		if (! (value & 0x100)) {
 			break;
 		}
 		usleep(1000);
@@ -571,8 +576,11 @@ int Bcm::isDSPBusy(int *busy)
 	if (ret) {
 		return ret;
 	}
-	ret = mBcmStatus & 0x100;
-	if (ret) {
+	status = getIntegerParam(mBcmStatus, &value);
+	if (status) {
+		return -1;
+	}
+	if (value & 0x100) {
 		E(printf("DSP still busy after 10 ms!!!\n"));
 		return -1;
 	}
