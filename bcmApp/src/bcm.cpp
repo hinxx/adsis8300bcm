@@ -606,6 +606,11 @@ int Bcm::refreshParameters()
 
 	D(printf("Enter\n"));
 
+	ret = SIS8300::refreshParameters();
+	if (ret) {
+		return ret;
+	}
+
 	/* DSP needs to be idle before we can read the statuses and alarms. */
 	ret = isDSPBusy(&busy);
 	if (ret) {
@@ -653,6 +658,11 @@ int Bcm::updateParameters()
 	int ret = 0;
 
 	D(printf("Enter\n"));
+
+	ret = SIS8300::updateParameters();
+	if (ret) {
+		return ret;
+	}
 
 	/* DSP needs to be idle before we can update the registers! */
 	ret = isDSPBusy(&busy);
