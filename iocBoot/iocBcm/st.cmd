@@ -172,9 +172,11 @@ dbpf $(PREFIX)TrigSource 1
 dbpf $(PREFIX)TrigLine 4
 # SIS8900 RTM
 dbpf $(PREFIX)RTMType 1
-#dbpf $(PREFIX)RTMTempGet 1
 # Enable all channels
 dbpf $(PREFIX)Enable 1
+# Set reference ADC clock parameters
+dbpf $(PREFIX)RefClkFreq 88052
+dbpf $(PREFIX)RefClkThreshold 20
 
 # No conversion is made for BCM data
 dbpf $(PREFIX)$(AICH0):ConvFactor 1

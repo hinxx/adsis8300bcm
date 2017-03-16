@@ -97,7 +97,10 @@ Bcm::Bcm(const char *portName, const char *devicePath,
     createParam(BcmMaxPulseWidthSrcSelString,		asynParamInt32,	&mBcmMaxPulseWidthSrcSel);
     createParam(BcmMinTrigPeriodString,		asynParamInt32,	&mBcmMinTrigPeriod);
     createParam(BcmMinTrigPeriodSrcSelString,		asynParamInt32,	&mBcmMinTrigPeriodSrcSel);
+    createParam(BcmResetAdcFifoString,		asynParamInt32,	&mBcmResetAdcFifo);
     createParam(BcmResetAlarmsString,		asynParamInt32,	&mBcmResetAlarms);
+    createParam(BcmRefClkFreqString,		asynParamInt32,	&mBcmRefClkFreq);
+    createParam(BcmRefClkThresholdString,		asynParamInt32,	&mBcmRefClkThreshold);
     createParam(BcmRfqTransparencyString,		asynParamInt32,	&mBcmRfqTransparency);
     createParam(BcmStatusString,		asynParamInt32,	&mBcmStatus);
     createParam(BcmTrigPeriodString,		asynParamInt32,	&mBcmTrigPeriod);
@@ -627,6 +630,8 @@ int Bcm::refreshParameters()
 	ret |= refreshRegisterParameter(mBcmFlatTopTime, BCM_FLAT_TOP_TIME_REG, 0xFFFFF);
 	ret |= refreshRegisterParameter(mBcmClkTrigAlarmsLatched, BCM_CLK_TRIG_ALARMS_LATCHED_REG, 0x1F);
 	ret |= refreshRegisterParameter(mBcmClkTrigAlarmsFirst, BCM_CLK_TRIG_ALARMS_FIRST_REG, 0x1F);
+	ret |= refreshRegisterParameter(mBcmRefClkFreq, BCM_REF_CLK_FREQ_REG, 0xFFFFF);
+	ret |= refreshRegisterParameter(mBcmRefClkThreshold, BCM_REF_CLK_THRESHOLD_REG, 0xFFFFF);
 
 	/* Do callbacks so higher layers see any changes */
     callParamCallbacks(0);
@@ -683,6 +688,9 @@ int Bcm::updateParameters()
 	ret |= updateRegisterParameter(mBcmMinTrigPeriod, BCM_MIN_TRIG_PERIOD_REG, 0xFFFF, 0);
 	ret |= updateRegisterParameter(mBcmMaxPulseWidth, BCM_MAX_PULSE_WIDTH_REG, 0x1FFF, 0);
 	ret |= updateRegisterParameter(mBcmCalPulse, BCM_CAL_PULSE_REG, 0x1, 0);
+	ret |= updateRegisterParameter(mBcmRefClkFreq, BCM_REF_CLK_FREQ_REG, 0xFFFFF, 0);
+	ret |= updateRegisterParameter(mBcmRefClkThreshold, BCM_REF_CLK_THRESHOLD_REG, 0xFFFFF, 0);
+	ret |= updateRegisterParameter(mBcmResetAdcFifo, BCM_RESET_ADC_FIFO_REG, 0x2, 1);
 	ret |= updateRegisterParameter(mBcmResetAlarms, BCM_RESET_ALARMS_REG, 0x1, 0);
 	ret |= updateRegisterParameter(mBcmAllAlarms, BCM_ALL_ALARMS_REG, 0x1, 0);
 	ret |= updateRegisterParameter(mBcmAuxClkAlarm, BCM_AUX_CLK_ALARM_REG, 0x1, 1);

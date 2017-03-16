@@ -38,6 +38,9 @@
 #define BCM_MAX_PULSE_WIDTH_SRC_SEL_REG			0x402
 #define BCM_MIN_TRIG_PERIOD_REG			0x412
 #define BCM_MIN_TRIG_PERIOD_SRC_SEL_REG			0x402
+#define BCM_REF_CLK_FREQ_REG			0x40A
+#define BCM_REF_CLK_THRESHOLD_REG			0x40B
+#define BCM_RESET_ADC_FIFO_REG			0x409
 #define BCM_RESET_ALARMS_REG			0x430
 #define BCM_RFQ_TRANSPARENCY_REG			0x410
 #define BCM_STATUS_REG			0x420
@@ -114,7 +117,10 @@
 #define BcmMaxPulseWidthSrcSelString			"BCM_MAX_PULSE_WIDTH_SRC_SEL"
 #define BcmMinTrigPeriodString			"BCM_MIN_TRIG_PERIOD"
 #define BcmMinTrigPeriodSrcSelString			"BCM_MIN_TRIG_PERIOD_SRC_SEL"
+#define BcmResetAdcFifoString			"BCM_RESET_ADC_FIFO"
 #define BcmResetAlarmsString			"BCM_RESET_ALARMS"
+#define BcmRefClkFreqString			"BCM_REF_CLK_FREQ"
+#define BcmRefClkThresholdString			"BCM_REF_CLK_THRESHOLD"
 #define BcmRfqTransparencyString			"BCM_RFQ_TRANSPARENCY"
 #define BcmStatusString			"BCM_STATUS"
 #define BcmTrigPeriodString			"BCM_TRIG_PERIOD"
@@ -186,7 +192,10 @@ protected:
 	int mBcmMaxPulseWidthSrcSel;
 	int mBcmMinTrigPeriod;
 	int mBcmMinTrigPeriodSrcSel;
+	int mBcmResetAdcFifo;
 	int mBcmResetAlarms;
+	int mBcmRefClkFreq;
+	int mBcmRefClkThreshold;
 	int mBcmRfqTransparency;
 	int mBcmStatus;
 	int mBcmTrigPeriod;

@@ -84,6 +84,54 @@ record(bi, "$(P)$(R)IgnoreBusy_RBV")
     field(SCAN, "I/O Intr")
 }
 
+## Register '0x409' is RW (BCM_INT_RESET_ADC_FIFO)
+record(bo, "$(P)$(R)ResetAdcFifo")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_RESET_ADC_FIFO")
+    field(ZNAM, "Enabled")
+    field(ONAM, "Disabled")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)ResetAdcFifo_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_RESET_ADC_FIFO")
+    field(ZNAM, "Enabled")
+    field(ONAM, "Disabled")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x40A' is RW (BCM_INT_REF_CLK_FRQ_KHZ)
+record(longout, "$(P)$(R)RefClkFreq")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_REF_CLK_FREQ")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)RefClkFreq_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_REF_CLK_FREQ")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x40B' is RW (BCM_INT_REF_CLK_THRSH_KHZ)
+record(longout, "$(P)$(R)RefClkThreshold")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_REF_CLK_THRESHOLD")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)RefClkThreshold_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_REF_CLK_THRESHOLD")
+    field(SCAN, "I/O Intr")
+}
+
 ## Register '0x410' is RW (BCM_CTRL_RFQ_TRANSPARENCY)
 record(longout, "$(P)$(R)RFQTransparency")
 {
