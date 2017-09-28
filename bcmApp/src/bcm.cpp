@@ -40,6 +40,14 @@
 
 static const char *driverName = "Bcm";
 
+
+double time_msec() {
+	struct timespec ts;
+
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	return (double) ts.tv_sec * 1.0e3 + ts.tv_nsec / 1.0e6;
+}
+
 /* asyn addresses:
  * 0 .. 9    AI channels
  * 10 .. 19  BCM channels
@@ -499,6 +507,12 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 		return -1;
 	}
 
+	/**** HACK to workaround the self clearing register - we need to see a change in value
+				for this function to recognize reset all alarms request! IMPROVE! ******/
+	if (index == mBcmResetAlarms) {
+		setIntegerParam(list, index, 0);
+	}
+
 	/* clear the value has changed flag */
 	status = clearParamValueNew(list, index);
 	if (status) {
@@ -553,6 +567,11 @@ int Bcm::isDSPBusy(int *busy)
 	asynStatus status;
 
 	D(printf("Enter\n"));
+
+	/*** Ignore the DSP busy bit ***/
+	*busy = 0;
+	return 0;
+	/*** Ignore the DSP busy bit ***/
 
 	*busy = 1;
 
@@ -766,7 +785,7 @@ asynStatus Bcm::writeInt32(asynUser *pasynUser, epicsInt32 value)
     getAddress(pasynUser, &addr);
     getParamName(function, &name);
     D(printf("Enter '%s' %d (%d) = %d\n", name, function, addr, value));
- 
+
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
     status = setIntegerParam(addr, function, value);
