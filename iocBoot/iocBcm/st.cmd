@@ -160,8 +160,8 @@ iocInit()
 
 # Set some defaults for BCM
 # internal clock; ~83.3 MHz
-dbpf $(PREFIX)ClockSource 0
-dbpf $(PREFIX)ClockDiv 3
+#dbpf $(PREFIX)ClockSource 0
+#dbpf $(PREFIX)ClockDiv 3
 # SMA clock; 88.0525 MHz
 dbpf $(PREFIX)ClockSource 2
 dbpf $(PREFIX)ClockDiv 1
@@ -169,6 +169,7 @@ dbpf $(PREFIX)ClockDiv 1
 dbpf $(PREFIX)TrigSource 1
 # backplane 0
 dbpf $(PREFIX)TrigLine 4
+dbpf $(PREFIX)TrigRepeat 1
 # SIS8900 RTM
 dbpf $(PREFIX)RTMType 1
 # Enable all channels
@@ -213,6 +214,94 @@ dbpf $(PREFIX)TS1:TSNumPoints 37500
 dbpf $(PREFIX)TS1:TSAcquireMode 1
 dbpf $(PREFIX)TS1:TSAcquire 1
 dbpf $(PREFIX)TS1:TSAveragingTime 0
+
+# BCM specifics
+dbpf $(PREFIX)MinTrigPeriod 71
+dbpf $(PREFIX)MaxPulseWidth 3000
+dbpf $(PREFIX)$(PROBE0):ProbeSrcSel 10
+dbpf $(PREFIX)$(PROBE1):ProbeSrcSel 11
+dbpf $(PREFIX)$(PROBE2):ProbeSrcSel 12
+
+# BCM channel specifics
+dbpf $(PREFIX)$(BCM0):ADCScale 25600
+dbpf $(PREFIX)$(BCM0):DroopRate 9550
+dbpf $(PREFIX)$(BCM0):UpperThr 17000
+dbpf $(PREFIX)$(BCM0):LowerThr 15000
+dbpf $(PREFIX)$(BCM0):ErrantThr 512
+dbpf $(PREFIX)$(BCM0):DroopBaseline 1
+dbpf $(PREFIX)$(BCM0):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM1):ADCScale 25600
+dbpf $(PREFIX)$(BCM1):DroopRate 9550
+dbpf $(PREFIX)$(BCM1):UpperThr 17000
+dbpf $(PREFIX)$(BCM1):LowerThr 15000
+dbpf $(PREFIX)$(BCM1):ErrantThr 512
+dbpf $(PREFIX)$(BCM1):DroopBaseline 1
+dbpf $(PREFIX)$(BCM1):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM2):ADCScale 25600
+dbpf $(PREFIX)$(BCM2):DroopRate 9550
+dbpf $(PREFIX)$(BCM2):UpperThr 17000
+dbpf $(PREFIX)$(BCM2):LowerThr 15000
+dbpf $(PREFIX)$(BCM2):ErrantThr 512
+dbpf $(PREFIX)$(BCM2):DroopBaseline 1
+dbpf $(PREFIX)$(BCM2):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM3):ADCScale 25600
+dbpf $(PREFIX)$(BCM3):DroopRate 9550
+dbpf $(PREFIX)$(BCM3):UpperThr 17000
+dbpf $(PREFIX)$(BCM3):LowerThr 15000
+dbpf $(PREFIX)$(BCM3):ErrantThr 512
+dbpf $(PREFIX)$(BCM3):DroopBaseline 1
+dbpf $(PREFIX)$(BCM3):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM4):ADCScale 25600
+dbpf $(PREFIX)$(BCM4):DroopRate 9550
+dbpf $(PREFIX)$(BCM4):UpperThr 17000
+dbpf $(PREFIX)$(BCM4):LowerThr 15000
+dbpf $(PREFIX)$(BCM4):ErrantThr 512
+dbpf $(PREFIX)$(BCM4):DroopBaseline 1
+dbpf $(PREFIX)$(BCM4):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM5):ADCScale 25600
+dbpf $(PREFIX)$(BCM5):DroopRate 9550
+dbpf $(PREFIX)$(BCM5):UpperThr 17000
+dbpf $(PREFIX)$(BCM5):LowerThr 15000
+dbpf $(PREFIX)$(BCM5):ErrantThr 512
+dbpf $(PREFIX)$(BCM5):DroopBaseline 1
+dbpf $(PREFIX)$(BCM5):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM6):ADCScale 25600
+dbpf $(PREFIX)$(BCM6):DroopRate 9550
+dbpf $(PREFIX)$(BCM6):UpperThr 17000
+dbpf $(PREFIX)$(BCM6):LowerThr 15000
+dbpf $(PREFIX)$(BCM6):ErrantThr 512
+dbpf $(PREFIX)$(BCM6):DroopBaseline 1
+dbpf $(PREFIX)$(BCM6):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM7):ADCScale 25600
+dbpf $(PREFIX)$(BCM7):DroopRate 9550
+dbpf $(PREFIX)$(BCM7):UpperThr 17000
+dbpf $(PREFIX)$(BCM7):LowerThr 15000
+dbpf $(PREFIX)$(BCM7):ErrantThr 512
+dbpf $(PREFIX)$(BCM7):DroopBaseline 1
+dbpf $(PREFIX)$(BCM7):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM8):ADCScale 25600
+dbpf $(PREFIX)$(BCM8):DroopRate 9550
+dbpf $(PREFIX)$(BCM8):UpperThr 17000
+dbpf $(PREFIX)$(BCM8):LowerThr 15000
+dbpf $(PREFIX)$(BCM8):ErrantThr 512
+dbpf $(PREFIX)$(BCM8):DroopBaseline 1
+dbpf $(PREFIX)$(BCM8):NoiseFilter 1
+
+dbpf $(PREFIX)$(BCM9):ADCScale 25600
+dbpf $(PREFIX)$(BCM9):DroopRate 9550
+dbpf $(PREFIX)$(BCM9):UpperThr 17000
+dbpf $(PREFIX)$(BCM9):LowerThr 15000
+dbpf $(PREFIX)$(BCM9):ErrantThr 512
+dbpf $(PREFIX)$(BCM9):DroopBaseline 1
+dbpf $(PREFIX)$(BCM9):NoiseFilter 1
 
 ###############################################################################
 
