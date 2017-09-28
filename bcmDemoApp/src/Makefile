@@ -10,14 +10,22 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
-PROD_NAME = SIS8300bcmDemoApp
+PROD_NAME = bcmDemoApp
 PROD_IOC = $(PROD_NAME)
 
 # <name>.dbd will be created from <name>Include.dbd
 DBD += $(PROD_NAME).dbd
-$(PROD_NAME)_DBD += SIS8300bcmSupport.dbd
+$(PROD_NAME)_DBD += bcmSupport.dbd
+
+# <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
+PROD_SRCS_DEFAULT += $(PROD_NAME)_registerRecordDeviceDriver.cpp $(PROD_NAME)Main.cpp
+PROD_SRCS_vxWorks += $(PROD_NAME)_registerRecordDeviceDriver.cpp
+
+PROD_LIBS += bcm
+PROD_LIBS += SIS8300
 
 # devlib2 and mrfioc2
+PROD_LIBS += evgMrm evrMrm mrmShared mrfCommon epicspci epicsvme
 $(PROD_NAME)_DBD += base.dbd
 $(PROD_NAME)_DBD += system.dbd
 $(PROD_NAME)_DBD += evrSupport.dbd
@@ -26,21 +34,10 @@ $(PROD_NAME)_DBD += mrmShared.dbd
 $(PROD_NAME)_DBD += mrfCommon.dbd
 $(PROD_NAME)_DBD += epicspci.dbd
 
-# <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
-PROD_SRCS_DEFAULT += $(PROD_NAME)_registerRecordDeviceDriver.cpp $(PROD_NAME)Main.cpp
-PROD_SRCS_vxWorks += $(PROD_NAME)_registerRecordDeviceDriver.cpp
-
-PROD_LIBS += SIS8300bcm
-PROD_LIBS += SIS8300
-# devlib2 and mrfioc2
-PROD_LIBS += evgMrm evrMrm mrmShared mrfCommon epicspci epicsvme
-
 PROD_SYS_LIBS += rt m udev
+PROD_LIBS += sis8300drv
 
 include $(ADCORE)/ADApp/commonDriverMakefile
-
-PROD_LIBS += sis8300drv
-#PROD_LIBS += sis8300drvbcm
 
 #=============================
 

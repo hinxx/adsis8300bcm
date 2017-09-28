@@ -20,3 +20,4 @@ external/
 *.bin
 *.mcs
 tmp
+/.pydevproject

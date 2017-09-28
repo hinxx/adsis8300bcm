@@ -1,0 +1,429 @@
+#=================================================================#
+# Template file: bcmMain.template
+# Database for the records specific to the BCM driver
+# Hinko Kocevar
+# January 22, 2017
+
+## Register '0x400' is RO (BCM_INT_GATEWARE_VERSION)
+record(longin, "$(P)$(R)BCMFWVersion_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_FW_VERSION")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x402' is RW (BCM_INT_MIN_TRIG_PERIOD_SRC_SEL)
+record(mbbo, "$(P)$(R)MinTrigPeriodSrcSel")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MIN_TRIG_PERIOD_SRC_SEL")
+    field(ZRST, "FW register")
+    field(ZRVL, "0x00")
+    field(ONST, "MRF timing")
+    field(ONVL, "0x01")
+    info(autosaveFields, "VAL")
+}
+record(mbbi, "$(P)$(R)MinTrigPeriodSrcSel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MIN_TRIG_PERIOD_SRC_SEL")
+    field(ZRST, "FW register")
+    field(ZRVL, "0x00")
+    field(ONST, "MRF timing")
+    field(ONVL, "0x01")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x402' is RO (BCM_INT_MIN_TRIG_PERIOD_SRC_SEL)
+record(mbbo, "$(P)$(R)MaxPulseWidthSrcSel")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAX_PULSE_WIDTH_SRC_SEL")
+    field(ZRST, "FW register")
+    field(ZRVL, "0x00")
+    field(ONST, "MRF timing")
+    field(ONVL, "0x02")
+    info(autosaveFields, "VAL")
+}
+record(mbbi, "$(P)$(R)MaxPulseWidthSrcSel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAX_PULSE_WIDTH_SRC_SEL")
+    field(ZRST, "FW register")
+    field(ZRVL, "0x00")
+    field(ONST, "MRF timing")
+    field(ONVL, "0x02")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x403' is RW (BCM_INT_TRIG_SOURCE_SELECT_REG)
+record(mbbo, "$(P)$(R)TrigSrcSel")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_SRC_SEL")
+    field(ZRST, "Trigger logic")
+    field(ZRVL, "0x00")
+    field(ONST, "FW register")
+    field(ONVL, "0x01")
+    info(autosaveFields, "VAL")
+}
+record(mbbi, "$(P)$(R)TrigSrcSel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_SRC_SEL")
+    field(ZRST, "Trigger logic")
+    field(ZRVL, "0x00")
+    field(ONST, "FW register")
+    field(ONVL, "0x01")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x404' is RW (BCM_INT_BUSY_IGNORE_REG)
+record(bo, "$(P)$(R)IgnoreBusy")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_IGNORE_BUSY")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)IgnoreBusy_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_IGNORE_BUSY")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x409' is RW (BCM_INT_RESET_ADC_FIFO)
+record(bo, "$(P)$(R)ResetAdcFifo")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_RESET_ADC_FIFO")
+    field(ZNAM, "Enabled")
+    field(ONAM, "Disabled")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)ResetAdcFifo_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_RESET_ADC_FIFO")
+    field(ZNAM, "Enabled")
+    field(ONAM, "Disabled")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x40A' is RW (BCM_INT_REF_CLK_FRQ_KHZ)
+record(longout, "$(P)$(R)RefClkFreq")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_REF_CLK_FREQ")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)RefClkFreq_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_REF_CLK_FREQ")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x40B' is RW (BCM_INT_REF_CLK_THRSH_KHZ)
+record(longout, "$(P)$(R)RefClkThreshold")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_REF_CLK_THRESHOLD")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)RefClkThreshold_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_REF_CLK_THRESHOLD")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x410' is RW (BCM_CTRL_RFQ_TRANSPARENCY)
+record(longout, "$(P)$(R)RFQTransparency")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_RFQ_TRANSPARENCY")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)RFQTransparency_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_RFQ_TRANSPARENCY")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x411' is WO (BCM_CTRL_DIFF_WARN_RESET)
+record(longout, "$(P)$(R)DiffWarnReset")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_DIFF_WARN_RESET")
+    info(autosaveFields, "VAL")
+}
+
+## Register '0x412' is RW (BCM_CTRL_MIN_TRIG_PERIOD)
+record(longout, "$(P)$(R)MinTrigPeriod")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MIN_TRIG_PERIOD")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)MinTrigPeriod_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MIN_TRIG_PERIOD")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x413' is RW (BCM_CTRL_MAX_BEAMPULSE_WIDTH)
+record(longout, "$(P)$(R)MaxPulseWidth")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAX_PULSE_WIDTH")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)MaxPulseWidth_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAX_PULSE_WIDTH")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x414' is RW (BCM_CTRL_ENABLE_CALIBRATION_PULSE)
+record(bo, "$(P)$(R)CalPulse")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_CAL_PULSE")
+    field(ZNAM, "Disabled")
+    field(ONAM, "Enabled")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)CalPulse_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_CAL_PULSE")
+    field(ZNAM, "Disabled")
+    field(ONAM, "Enabled")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x415' is RW (BCM_CTRL_BEAM_ABOVE_THRESHOLD)
+record(longout, "$(P)$(R)BeamOverThr")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_BEAM_OVER_THR")
+    info(autosaveFields, "VAL")
+}
+record(longin, "$(P)$(R)BeamOverThr_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_BEAM_OVER_THR")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x420' is RO (BCM_STATUS)
+record(longin, "$(P)$(R)CoreStatus_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_STATUS")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x421' is RO (BCM_MEAS_CLK_FREQ_KHZ)
+record(longin, "$(P)$(R)ClkFreq_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_CLK_FREQ")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x422' is RO (BCM_MEAS_TRIG_PERIOD)
+record(longin, "$(P)$(R)TrigPeriod_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_PERIOD")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x423' is RO (BCM_MEAS_TRIG_WID)
+record(longin, "$(P)$(R)TrigWidth_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_WIDTH")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x424' is RO (BCM_MEAS_TIME_FLATTOP)
+record(longin, "$(P)$(R)FlatTopTime_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_FLAT_TOP_TIME")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x430' is WO (BCM_MPS_RESET)
+record(bo, "$(P)$(R)ResetAlarms")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_RESET_ALARMS")
+    field(ZNAM, "")
+    field(ONAM, "Reset alarms")
+    info(autosaveFields, "VAL")
+}
+
+## Register '0x431' is RW (BCM_MPS_ALL_ALARM_DISABLE)
+record(bo, "$(P)$(R)AllAlarms")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_ALL_ALARMS")
+    field(ZNAM, "Enabled")
+    field(ONAM, "Disabled")
+    info(autosaveFields, "VAL")
+}
+record(bi, "$(P)$(R)AllAlarms_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_ALL_ALARMS")
+    field(ZNAM, "Enabled")
+    field(ONAM, "Disabled")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x432' is RW (BCM_CLK_TRIG_MPS_ALARM_DISABLE)
+record(mbbo, "$(P)$(R)AUXClkAlarm")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_AUX_CLK_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x01")
+    info(autosaveFields, "VAL")
+}
+record(mbbi, "$(P)$(R)AUXClkAlarm_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_AUX_CLK_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x01")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x432' is RW (BCM_CLK_TRIG_MPS_ALARM_DISABLE)
+record(mbbo, "$(P)$(R)MainClkAlarm")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAIN_CLK_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x02")
+    info(autosaveFields, "VAL")
+}
+record(mbbi, "$(P)$(R)MainClkAlarm_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_MAIN_CLK_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x02")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x432' is RW (BCM_CLK_TRIG_MPS_ALARM_DISABLE)
+record(mbbo, "$(P)$(R)TrigTooLongAlarm")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_TOO_LONG_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x04")
+    info(autosaveFields, "VAL")
+}
+record(mbbi, "$(P)$(R)TrigTooLongAlarm_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_TOO_LONG_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x04")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x432' is RW (BCM_CLK_TRIG_MPS_ALARM_DISABLE)
+record(mbbo, "$(P)$(R)TrigTooShortAlarm")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_TOO_SHORT_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x08")
+    info(autosaveFields, "VAL")
+}
+record(mbbi, "$(P)$(R)TrigTooShortAlarm_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_TOO_SHORT_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x08")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x432' is RW (BCM_CLK_TRIG_MPS_ALARM_DISABLE)
+record(mbbo, "$(P)$(R)TrigTooFastAlarm")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_TOO_FAST_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x10")
+    info(autosaveFields, "VAL")
+}
+record(mbbi, "$(P)$(R)TrigTooFastAlarm_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_TRIG_TOO_FAST_ALARM")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x10")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x433' is RO (BCM_CLK_TRIG_MPS_ALARM_HOLD)
+record(longin, "$(P)$(R)ClkTrigAlarmsLatched_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_CLK_TRIG_ALARMS_LATCHED")
+    field(SCAN, "I/O Intr")
+}
+
+## Register '0x434' is RO (BCM_CLK_TRIG_MPS_ALARM_FIRST)
+record(longin, "$(P)$(R)ClkTrigAlarmsFirst_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_CLK_TRIG_ALARMS_FIRST")
+    field(SCAN, "I/O Intr")
+}
