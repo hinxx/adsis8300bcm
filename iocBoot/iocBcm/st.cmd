@@ -64,7 +64,7 @@ epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES", "30000000")
 # BcmConfig(const char *portName, const char *devicePath,
 #            int maxAddr, int numSamples, NDDataType_t dataType,
 #            int maxBuffers, size_t maxMemory, int priority, int stackSize)
-BcmConfig("$(PORT)", "/dev/sis8300-11", $(NUM_CH), $(NUM_SAMPLES), 7, 0, 0)
+BcmConfig("$(PORT)", "/dev/sis8300-5", $(NUM_CH), $(NUM_SAMPLES), 7, 0, 0)
 dbLoadRecords("$(SIS8300)/db/SIS8300.template",        "P=$(PREFIX),R=,           PORT=$(PORT),ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(SIS8300)/db/SIS8300N.template",       "P=$(PREFIX),R=$(AICH0):,  PORT=$(PORT),ADDR=0,TIMEOUT=1,NAME=$(AICH0)")
 dbLoadRecords("$(SIS8300)/db/SIS8300N.template",       "P=$(PREFIX),R=$(AICH1):,  PORT=$(PORT),ADDR=1,TIMEOUT=1,NAME=$(AICH1)")
@@ -132,8 +132,8 @@ dbLoadRecords("$(ADCORE)/db/NDTimeSeriesN.template", "P=$(PREFIX),R=TS1:9:, PORT
 
 # Timing MTCA EVR 300
 # As per EVR MTCA 300 engineering manual ch 5.3.5
-epicsEnvSet("SYS"               "EVR")
-epicsEnvSet("DEVICE"            "MTCA")
+epicsEnvSet("SYS"               "BCM")
+epicsEnvSet("DEVICE"            "EVR")
 epicsEnvSet("EVR_PCIDOMAIN"     "0x0")
 epicsEnvSet("EVR_PCIBUS"        "0x8")
 epicsEnvSet("EVR_PCIDEVICE"     "0x0")
@@ -147,8 +147,6 @@ dbLoadRecords("$(MRFIOC2)/db/evr-mtca-300.db", "DEVICE=$(DEVICE), SYS=$(SYS), Li
 dbLoadRecords("$(MRFIOC2)/db/evr-softEvent.template", "DEVICE=$(DEVICE), SYS=$(SYS), EVT=14, CODE=14")
 # MLVDS 0 (RearUniv32)
 dbLoadRecords("$(MRFIOC2)/db/evr-pulserMap.template", "DEVICE=$(DEVICE), SYS=$(SYS), PID=0, F=Trig, ID=0, EVT=14")
-# Front Panel 0 (FrontOut0)
-dbLoadRecords("$(MRFIOC2)/db/evr-pulserMap.template", "DEVICE=$(DEVICE), SYS=$(SYS), PID=1, F=Trig, ID=0, EVT=14")
 
 set_requestfile_path("$(SIS8300)/SIS8300App/Db")
 set_requestfile_path("$(BCM)/bcmApp/Db")
@@ -158,6 +156,7 @@ set_requestfile_path("$(BCM)/bcmApp/Db")
 
 iocInit()
 
+###############################################################################
 
 # Set some defaults for BCM
 # internal clock; ~83.3 MHz
@@ -177,6 +176,8 @@ dbpf $(PREFIX)Enable 1
 # Set reference ADC clock parameters
 dbpf $(PREFIX)RefClkFreq 88052
 dbpf $(PREFIX)RefClkThreshold 20
+# Ignore DSP busy bit
+dbpf $(PREFIX)IgnoreBusy 1
 
 # No conversion is made for BCM data
 dbpf $(PREFIX)$(AICH0):ConvFactor 1
@@ -201,37 +202,43 @@ dbpf $(PREFIX)$(AICH7):ConvOffset 0
 dbpf $(PREFIX)$(AICH8):ConvOffset 0
 dbpf $(PREFIX)$(AICH9):ConvOffset 0
 
-
-# Disable Rear Universal Output 32
-dbpf $(SYS)-$(DEVICE):RearUniv32-Ena-SP "Disabled"
-# Map Rear Universal Output 32 to pulser 0
-dbpf $(SYS)-$(DEVICE):RearUniv32-Src-SP 0
-# Map pulser 0 to event 14
-dbpf $(SYS)-$(DEVICE):Pul0-Evt-Trig0-SP 14
-# Set pulser 1 width to 3100 us
-dbpf $(SYS)-$(DEVICE):Pul0-Width-SP 3100
-# SIS8300 is triggered
-dbpf $(SYS)-$(DEVICE):RearUniv32-Ena-SP "Enabled"
-
-# Disable Front Panel Output 0
-dbpf $(SYS)-$(DEVICE):FrontOut0-Ena-SP "Disabled"
-# Map Front Panel Output 0 to pulser 1
-dbpf $(SYS)-$(DEVICE):FrontOut0-Src-SP 1
-# Map pulser 1 to event 14
-dbpf $(SYS)-$(DEVICE):Pul1-Evt-Trig0-SP 14
-# Set pulser 1 width to 3100 us
-dbpf $(SYS)-$(DEVICE):Pul1-Width-SP 3100
-# External generator is triggered
-dbpf $(SYS)-$(DEVICE):FrontOut0-Ena-SP "Enabled"
-
-
 # Setup TimeSeries plugin for AI
 dbpf $(PREFIX)TS0:TSNumPoints 300000
 dbpf $(PREFIX)TS0:TSAcquireMode 1
 dbpf $(PREFIX)TS0:TSAcquire 1
 dbpf $(PREFIX)TS0:TSAveragingTime 0
+
 # Setup TimeSeries plugin for BCM (8 times smaller than AI)
 dbpf $(PREFIX)TS1:TSNumPoints 37500
 dbpf $(PREFIX)TS1:TSAcquireMode 1
 dbpf $(PREFIX)TS1:TSAcquire 1
 dbpf $(PREFIX)TS1:TSAveragingTime 0
+
+###############################################################################
+
+# Setup EVR trigger lines (all use EVT 14 and pulser 0)
+
+dbpf $(SYS)-$(DEVICE):Pul0-Evt-Trig0-SP 14
+dbpf $(SYS)-$(DEVICE):Pul0-Width-SP 2860
+
+# Backplane 0
+dbpf $(SYS)-$(DEVICE):RearUniv32-Ena-SP "Disabled"
+dbpf $(SYS)-$(DEVICE):RearUniv32-Src-SP 0
+dbpf $(SYS)-$(DEVICE):RearUniv32-Ena-SP "Enabled"
+
+# All Front panel
+dbpf $(SYS)-$(DEVICE):FrontOut0-Ena-SP "Disabled"
+dbpf $(SYS)-$(DEVICE):FrontOut0-Src-SP 0
+dbpf $(SYS)-$(DEVICE):FrontOut0-Ena-SP "Enabled"
+
+dbpf $(SYS)-$(DEVICE):FrontOut1-Ena-SP "Disabled"
+dbpf $(SYS)-$(DEVICE):FrontOut1-Src-SP 0
+dbpf $(SYS)-$(DEVICE):FrontOut1-Ena-SP "Enabled"
+
+dbpf $(SYS)-$(DEVICE):FrontOut2-Ena-SP "Disabled"
+dbpf $(SYS)-$(DEVICE):FrontOut2-Src-SP 0
+dbpf $(SYS)-$(DEVICE):FrontOut2-Ena-SP "Enabled"
+
+dbpf $(SYS)-$(DEVICE):FrontOut3-Ena-SP "Disabled"
+dbpf $(SYS)-$(DEVICE):FrontOut3-Src-SP 0
+dbpf $(SYS)-$(DEVICE):FrontOut3-Ena-SP "Enabled"
