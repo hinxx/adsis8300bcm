@@ -64,7 +64,7 @@ epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES", "30000000")
 # BcmConfig(const char *portName, const char *devicePath,
 #            int maxAddr, int numSamples, NDDataType_t dataType,
 #            int maxBuffers, size_t maxMemory, int priority, int stackSize)
-BcmConfig("$(PORT)", "/dev/sis8300-5", $(NUM_CH), $(NUM_SAMPLES), 7, 0, 0)
+BcmConfig("$(PORT)", "/dev/sis8300-4", $(NUM_CH), $(NUM_SAMPLES), 7, 0, 0)
 dbLoadRecords("$(SIS8300)/db/SIS8300.template",        "P=$(PREFIX),R=,           PORT=$(PORT),ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(SIS8300)/db/SIS8300N.template",       "P=$(PREFIX),R=$(AICH0):,  PORT=$(PORT),ADDR=0,TIMEOUT=1,NAME=$(AICH0)")
 dbLoadRecords("$(SIS8300)/db/SIS8300N.template",       "P=$(PREFIX),R=$(AICH1):,  PORT=$(PORT),ADDR=1,TIMEOUT=1,NAME=$(AICH1)")
