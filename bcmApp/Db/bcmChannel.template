@@ -116,222 +116,270 @@ record(longin, "$(P)$(R)DroopRate_RBV")
 }
 
 ## Register '0xn07' is RW (BCM_ADC_ENABLE_PARAM_CHOPPER_RFQ)
-record(bo, "$(P)$(R)DroopBaseline")
+record(mbbo, "$(P)$(R)DroopBaseline")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_DROOP_BASELINE")
-    field(ZNAM, "Disabled")
-    field(ONAM, "Enabled")
+    field(ZRST, "Disabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Enabled")
+    field(ONVL, "0x01")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)DroopBaseline_RBV")
+record(mbbi, "$(P)$(R)DroopBaseline_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_DROOP_BASELINE")
-    field(ZNAM, "Disabled")
-    field(ONAM, "Enabled")
+    field(ZRST, "Disabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Enabled")
+    field(ONVL, "0x01")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn07' is RW (BCM_ADC_ENABLE_PARAM_CHOPPER_RFQ)
-record(bo, "$(P)$(R)NoiseFilter")
+record(mbbo, "$(P)$(R)NoiseFilter")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_NOISE_FILTER")
-    field(ZNAM, "Disabled")
-    field(ONAM, "Enabled")
+    field(ZRST, "Disabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Enabled")
+    field(ONVL, "0x02")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)NoiseFilter_RBV")
+record(mbbi, "$(P)$(R)NoiseFilter_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_NOISE_FILTER")
-    field(ZNAM, "Disabled")
-    field(ONAM, "Enabled")
+    field(ZRST, "Disabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Enabled")
+    field(ONVL, "0x02")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn07' is RW (BCM_ADC_ENABLE_PARAM_CHOPPER_RFQ)
-record(bo, "$(P)$(R)LocMEBT")
+record(mbbo, "$(P)$(R)LocMEBT")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_LOCATION_MEBT")
-    field(ZNAM, "After")
-    field(ONAM, "Before")
+    field(ZRST, "After")
+    field(ZRVL, "0x00")
+    field(ONST, "Before")
+    field(ONVL, "0x10")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)LocMEBT_RBV")
+record(mbbi, "$(P)$(R)LocMEBT_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_LOCATION_MEBT")
-    field(ZNAM, "After")
-    field(ONAM, "Before")
+    field(ZRST, "After")
+    field(ZRVL, "0x00")
+    field(ONST, "Before")
+    field(ONVL, "0x10")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn07' is RW (BCM_ADC_ENABLE_PARAM_CHOPPER_RFQ)
-record(bo, "$(P)$(R)LocRFQ")
+record(mbbo, "$(P)$(R)LocRFQ")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_LOCATION_RFQ")
-    field(ZNAM, "After")
-    field(ONAM, "Before")
+    field(ZRST, "After")
+    field(ZRVL, "0x00")
+    field(ONST, "Before")
+    field(ONVL, "0x20")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)LocRFQ_RBV")
+record(mbbi, "$(P)$(R)LocRFQ_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_LOCATION_RFQ")
-    field(ZNAM, "After")
-    field(ONAM, "Before")
+    field(ZRST, "After")
+    field(ZRVL, "0x00")
+    field(ONST, "Before")
+    field(ONVL, "0x20")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn08' is RW (BCM_ADC_MPS_ALARM_DISABLE)
-record(bo, "$(P)$(R)UpperThrAlarm")
+record(mbbo, "$(P)$(R)UpperThrAlarm")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_UPPER_THRESHOLD_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x01")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)UpperThrAlarm_RBV") {
+record(mbbi, "$(P)$(R)UpperThrAlarm_RBV") {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_UPPER_THRESHOLD_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x01")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn08' is RW (BCM_ADC_MPS_ALARM_DISABLE)
-record(bo, "$(P)$(R)LowerThrAlarm")
+record(mbbo, "$(P)$(R)LowerThrAlarm")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_LOWER_THRESHOLD_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x02")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)LowerThrAlarm_RBV") {
+record(mbbi, "$(P)$(R)LowerThrAlarm_RBV") {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_LOWER_THRESHOLD_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x02")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn08' is RW (BCM_ADC_MPS_ALARM_DISABLE)
-record(bo, "$(P)$(R)ErrantThrAlarm")
+record(mbbo, "$(P)$(R)ErrantThrAlarm")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_ERRANT_THRESHOLD_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x04")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)ErrantThrAlarm_RBV") {
+record(mbbi, "$(P)$(R)ErrantThrAlarm_RBV") {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_ERRANT_THRESHOLD_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x04")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn08' is RW (BCM_ADC_MPS_ALARM_DISABLE)
-record(bo, "$(P)$(R)PulsePastTrigAlarm")
+record(mbbo, "$(P)$(R)PulsePastTrigAlarm")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PULSE_PAST_TRIGGER_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x08")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)PulsePastTrigAlarm_RBV") {
+record(mbbi, "$(P)$(R)PulsePastTrigAlarm_RBV") {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PULSE_PAST_TRIGGER_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x08")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn08' is RW (BCM_ADC_MPS_ALARM_DISABLE)
-record(bo, "$(P)$(R)PulsePastLimitAlarm")
+record(mbbo, "$(P)$(R)PulsePastLimitAlarm")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PULSE_PAST_LIMIT_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x10")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)PulsePastLimitAlarm_RBV") {
+record(mbbi, "$(P)$(R)PulsePastLimitAlarm_RBV") {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_PULSE_PAST_LIMIT_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x10")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn08' is RW (BCM_ADC_MPS_ALARM_DISABLE)
-record(bo, "$(P)$(R)OverflowAlarm")
+record(mbbo, "$(P)$(R)OverflowAlarm")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_OVERFLOW_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x20")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)OverflowAlarm_RBV") {
+record(mbbi, "$(P)$(R)OverflowAlarm_RBV") {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_OVERFLOW_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x20")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn08' is RW (BCM_ADC_MPS_ALARM_DISABLE)
-record(bo, "$(P)$(R)UnderlowAlarm")
+record(mbbo, "$(P)$(R)UnderlowAlarm")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_UNDERFLOW_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x40")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)UnderflowAlarm_RBV") {
+record(mbbi, "$(P)$(R)UnderflowAlarm_RBV") {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_UNDERFLOW_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x40")
     field(SCAN, "I/O Intr")
 }
 
 ## Register '0xn08' is RW (BCM_ADC_MPS_ALARM_DISABLE)
-record(bo, "$(P)$(R)ADCStuckAlarm")
+record(mbbo, "$(P)$(R)ADCStuckAlarm")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_ADC_STUCK_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x80")
     info(autosaveFields, "VAL")
 }
-record(bi, "$(P)$(R)ADCStuckAlarm_RBV") {
+record(mbbi, "$(P)$(R)ADCStuckAlarm_RBV") {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BCM_ADC_STUCK_ALARM")
-    field(ZNAM, "Enabled")
-    field(ONAM, "Disabled")
+    field(ZRST, "Enabled")
+    field(ZRVL, "0x00")
+    field(ONST, "Disabled")
+    field(ONVL, "0x80")
     field(SCAN, "I/O Intr")
 }
 
