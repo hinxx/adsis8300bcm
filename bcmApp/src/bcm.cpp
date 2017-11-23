@@ -76,7 +76,6 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 
     : SIS8300(portName, devicePath,
     		maxAddr,
-			BCM_NUM_PARAMS,
 			numSamples,
 			dataType,
 			maxBuffers, maxMemory,
@@ -84,7 +83,7 @@ Bcm::Bcm(const char *portName, const char *devicePath,
 			stackSize)
 
 {
-    D(printf("%d addresses, %d parameters\n", maxAddr, BCM_NUM_PARAMS));
+    D(printf("%d addresses\n", maxAddr));
 
     /* adjust number of NDArrays we need to handle, 0 - AI, 1 - BCM */
     mNumArrays = 2;
