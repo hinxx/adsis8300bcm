@@ -455,7 +455,6 @@ int Bcm::updateRegisterParameter(int index, int reg, int mask, int readFirst)
 
 int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int readFirst)
 {
-	bool changed;
 	asynStatus status;
 	int value;
 	unsigned int regValue;
@@ -466,6 +465,20 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 		reg = reg + BCM_CH0_OFFSET + ((list - BCM_ADDR_FIRST) * 0x100);
 	}
 
+#if 0
+
+	XXX: this is no longer supported/desired!
+
+	**** TEMP solution ****
+	by commenting this out we make code compile, but BCM might not be
+	functioning properly
+
+	**** FINAL solution ****
+	caching of the FPGA register values (when written) needs to be implemented
+	at the firmware level.. firmware is then expected to apply the cached values
+	after DSP is not busy! When firmware is available we can cleanup this part.
+
+	bool changed;
 	status = isParamValueNew(list, index, &changed);
 	if (status) {
 		return -1;
@@ -475,6 +488,7 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 		/* nothing to do .. */
 		return 0;
 	}
+#endif
 
 	/* value has changed, update the FPGA register */
 	status = getIntegerParam(list, index, &value);
@@ -512,11 +526,16 @@ int Bcm::updateRegisterParameter(int list, int index, int reg, int mask, int rea
 		setIntegerParam(list, index, 0);
 	}
 
+#if 0
+
+	XXX: this is no longer supported/desired!
+
 	/* clear the value has changed flag */
 	status = clearParamValueNew(list, index);
 	if (status) {
 		return -1;
 	}
+#endif
 
 	return 0;
 }
